@@ -7,7 +7,7 @@
     <title>@yield('title', 'DukaFlow')</title>
 
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"> -->
     
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -91,6 +91,19 @@
             color: #64748b;
         }
 
+        /* ========== OVERLAY ========== */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 1045;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
         #main-content {
             margin-left: var(--sidebar-width);
             min-height: 100vh;
@@ -109,6 +122,10 @@
             position: sticky;
             top: 0;
             z-index: 900;
+        }
+
+        .dropdown-menu {
+            z-index: 1040;
         }
 
         .shop-badge {
@@ -136,6 +153,7 @@
         @media (max-width: 991.98px) {
             #sidebar {
                 margin-left: calc(var(--sidebar-width) * -1);
+                z-index: 1050;
             }
             #sidebar.show {
                 margin-left: 0;
@@ -146,50 +164,170 @@
         }
     </style>
 
+    <!-- Local CSS -->
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dataTables.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/select2-bootstrap-5.min.css') }}">
+    
     @stack('styles')
+    <!-- @yield('styles') -->
+
 </head>
 <body>
 
-    {{-- Sidebar --}}
+    <!-- Overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+    <!-- Sidebar -->
     @include('layouts.partials.sidebar')
 
-    {{-- Main Content --}}
-    <div id="main-content">
-
-        {{-- Header --}}
+        <!-- Header -->
         @include('layouts.partials.header')
 
-        {{-- Page Content --}}
+        <!-- Page Content -->
         <div class="content-wrapper">
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
 
-            @if(session('error'))
+            <!-- @if(session('error'))
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     {{ session('error') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
-            @endif
+            @endif -->
 
             @yield('content')
         </div>
 
-        {{-- Footer --}}
+        <!-- Footer -->
         @include('layouts.partials.footer')
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Jquery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Local JS -->
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('js/dataTables.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
+
+    <!-- Datatable -->
     <script>
-        document.getElementById('sidebarToggle')?.addEventListener('click', function () {
-            document.getElementById('sidebar').classList.toggle('show');
+        $(document).ready(function() {
+            $('#employeeTable, #departmentTable, #leaveTable, #payrollTable, #performanceTable, #holidayTable', '#announcementTable').DataTable({
+                "language": {
+                    "search": "Search:",
+                    "lengthMenu": "Show _MENU_ entries",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                    responsive: true,
+                    scrollX: true,        // horizontal scroll 
+                    autoWidth: false,
+                    "paginate": {
+                        "first": "First",
+                        "last": "Last",
+                        "next": "Next",
+                        "previous": "Prev"
+                    }
+                }
+            });
         });
     </script>
 
+    <!-- SweetAlert2 -->
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: false,
+            didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+
+        // success message
+        @if(session('success'))
+            Toast.fire({
+                icon: 'success',
+                title: "{{ session('success') }}"
+            });
+        @endif
+        
+        @if(session('error'))
+            Toast.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: "{{ session('error') }}",
+                confirmButtonText: 'OK'
+            });
+        @endif
+    </script>
+
+    <!-- Overlays & Offset-->
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const toggleBtn = document.getElementById('sidebarToggle');
+        const closeBtn = document.getElementById('sidebarClose');
+
+        function openSidebar() {
+            sidebar.classList.add('show');
+            overlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        toggleBtn?.addEventListener('click', () => {
+            sidebar.classList.contains('show') ? closeSidebar() : openSidebar();
+        });
+
+        closeBtn?.addEventListener('click', closeSidebar);
+        overlay?.addEventListener('click', closeSidebar);
+
+        document.querySelectorAll('.app-sidebar-container a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 992) closeSidebar();
+            });
+        });
+    </script>
+
+    <script>
+        window.addEventListener('pageshow', function (event) {
+            // Back button pressed
+            var historyTraversal = event.persisted || 
+                                (typeof window.performance != 'undefined' && 
+                                    window.performance.navigation.type === 2);
+                        
+            if (historyTraversal) {
+                // Close any frozen SweetAlert spinner immediately
+                if (typeof Swal !== 'undefined') {
+                    Swal.close();
+                }
+
+                var badge = document.querySelector('.notification-badge'); 
+                if (badge) {
+                    badge.style.display = 'none';
+                }
+
+                window.location.reload();
+                
+            }
+        });
+        
+    </script>
+
     @stack('scripts')
+    
 </body>
 </html>

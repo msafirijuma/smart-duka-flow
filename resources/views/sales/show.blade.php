@@ -2,14 +2,19 @@
 @section('title', 'Sale Details')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-md-flex justify-content-between align-items-center mb-4">
     <div>
         <h4 class="fw-bold mb-0">Invoice: {{ $sale->invoice_number }}</h4>
         <small class="text-muted">{{ $sale->created_at->format('d M Y, H:i') }}</small>
     </div>
-    <a href="{{ route('sales.index') }}" class="btn btn-outline-secondary btn-sm">
-        ← Back to Sales
-    </a>
+    <div class="d-flex justify-content-between align-items-center gap-2 mt-2 mt-md-0">
+        <a href="{{ route('sales.receipt', $sale) }}" target="_blank" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-printer me-2"></i>Print Receipt
+        </a>
+        <a href="{{ route('sales.index') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-arrow-left me-2"></i>Back to Sales
+        </a>
+    </div>
 </div>
 
 <div class="row g-3">
@@ -80,11 +85,12 @@
     <div class="card-header bg-white fw-semibold">
         Items Sold
     </div>
-    <div class="card-body p-0">
+    <div class="card-body p-3">
         <div class="table-responsive">
-            <table class="table mb-0">
+            <table class="table table-striped table-hover mb-0">
                 <thead class="table-light">
                     <tr>
+                        <td>#</td>
                         <th>Product</th>
                         <th>Unit Price</th>
                         <th>Qty</th>
@@ -94,6 +100,7 @@
                 <tbody>
                     @foreach($sale->items as $item)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->product_name }}</td>
                             <td>TZS {{ number_format($item->unit_price, 0) }}</td>
                             <td>{{ $item->quantity }}</td>

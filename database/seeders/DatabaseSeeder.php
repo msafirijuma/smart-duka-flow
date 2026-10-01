@@ -10,13 +10,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Create Roles
-        Role::create(['name' => 'Super Admin']);
-        Role::create(['name' => 'HR']);
-        Role::create(['name' => 'Manager']);
-        Role::create(['name' => 'Employee']);
+        // Role::create(['name' => 'admin']);
+        // Role::create(['name' => 'owner']);
+        // Role::create(['name' => 'manager']);
+        // Role::create(['name' => 'cashier']);
 
         $this->call([
-            
+            RoleSeeder::class,
         ]);
     }
 }

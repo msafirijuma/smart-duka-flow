@@ -5,6 +5,9 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use App\Http\Middleware\PreventBackHistory;
+use App\Http\Middleware\RoleMiddleware;
+use App\Http\Middleware\EnsureShopSelected;
+use App\Http\Middleware\EnsureUserHasRole;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,8 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         //
         return $middleware->alias([
-            'role' => \App\Http\Middleware\RoleMiddleware::class,
-            'shop.selected' => \App\Http\Middleware\EnsureShopSelected::class,
+            'shop.selected' => EnsureShopSelected::class,
+            'role' => EnsureUserHasRole::class,
         ]);
         $middleware->web(append: [
             PreventBackHistory::class,

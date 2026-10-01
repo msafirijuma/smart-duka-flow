@@ -85,7 +85,7 @@
                     <label class="form-label small mb-1">Payment Method</label>
                     <select id="payment_method" class="form-select form-select-sm">
                         <option value="cash">Cash</option>
-                        <option value="mpesa">M-Pesa</option>
+                        <option value="mpesa">Mobile DPO</option>
                         <option value="bank">Bank</option>
                         <option value="credit">Credit</option>
                     </select>
@@ -133,10 +133,28 @@
         price = parseFloat(price);
         stock = parseInt(stock);
 
+        if (stock <= 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Out of stock',
+                text: `${name} is currently out of stock.`,
+                confirmButtonColor: '#2563eb'
+            });
+            return;
+        }
+
         const existing = cart.find(i => i.id === id);
         if (existing) {
-            if (existing.quantity + 1 > stock) {
-                alert('Not enough stock');
+            if (existing.quantity >= existing.stock) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Stock limit',
+                    text: `Only ${existing.stock} ${existing.unit} of ${existing.name} available in stock.`,
+                    confirmButtonColor: '#2563eb'
+                });
+                // Keep at max — don't increase
+                existing.quantity = existing.stock;
+                renderCart();
                 return;
             }
             existing.quantity += 1;
@@ -199,8 +217,19 @@
             input.addEventListener('change', function () {
                 const idx = this.dataset.index;
                 let val = parseInt(this.value) || 1;
-                if (val > cart[idx].stock) val = cart[idx].stock;
+                const maxStock = cart[idx].stock;
+
+                if (val > maxStock) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Stock limit',
+                        text: `Only ${maxStock} ${cart[idx].unit} of ${cart[idx].name} available.`,
+                        confirmButtonColor: '#2563eb'
+                    });
+                    val = maxStock; // auto-adjust to max
+                }
                 if (val < 1) val = 1;
+
                 cart[idx].quantity = val;
                 renderCart();
             });
@@ -222,8 +251,18 @@
 
         document.getElementById('subtotal').innerText = 'TZS ' + subtotal.toLocaleString();
         document.getElementById('total').innerText = 'TZS ' + total.toLocaleString();
-        document.getElementById('amount_paid').value = total;
+        
+        // Auto-set amount paid to total (user can change)
+        const amountInput = document.getElementById('amount_paid');
+        if (!amountInput.dataset.manual) {
+            amountInput.value = total;
+        }
     }
+
+    // If user types in amount_paid, mark as manual
+    document.getElementById('amount_paid').addEventListener('input', function () {
+        this.dataset.manual = '1';
+    });
 
     document.getElementById('discount').addEventListener('input', updateTotals);
 
@@ -234,23 +273,84 @@
 
     // Checkout
     document.getElementById('btnCheckout').addEventListener('click', function () {
-        if (cart.length === 0) return;
+        if (cart.length === 0) {
+            Swal.fire({ 
+                icon: 'warning', 
+                title: 'Cart is empty', 
+                confirmButtonColor: '#2563eb' 
+            });
+            return;
+        }
 
+        // Stock check
+        for (const item of cart) {
+            if (item.quantity > item.stock) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Insufficient stock',
+                    text: `${item.name}: only ${item.stock} available.`,
+                    confirmButtonColor: '#2563eb'
+                });
+                return;
+            }
+        }
+
+        const subtotal = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+        const discount = parseFloat(document.getElementById('discount').value) || 0;
+        const total = Math.max(0, subtotal - discount);
+        const amountPaid = parseFloat(document.getElementById('amount_paid').value) || 0;
+        const paymentMethod = document.getElementById('payment_method').value;
+        const customerId = document.getElementById('customer_id').value || null;
+
+        // ===== VALIDATIONS =====
+        if (total <= 0) {
+            Swal.fire({ 
+                icon: 'warning', title: 
+                'Invalid total', text: 'Total must be greater than 0.', 
+                confirmButtonColor: '#2563eb' 
+            });
+            return;
+        }
+
+        if (paymentMethod === 'credit') {
+            if (!customerId) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Customer required',
+                    text: 'Please select a customer for credit sales.',
+                    confirmButtonColor: '#2563eb'
+                });
+                return;
+            }
+        } else {
+            // Cash, M-Pesa, Bank — must pay at least total
+            if (amountPaid < total) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Insufficient payment',
+                    text: `Amount to be paid (TZS ${amountPaid.toLocaleString()}) is less than total (TZS ${total.toLocaleString()}).`,
+                    confirmButtonColor: '#2563eb'
+                });
+                return;
+            }
+        }
+
+        // ===== SUBMIT =====
         const payload = {
             items: cart.map(i => ({
                 id: i.id,
                 quantity: i.quantity,
                 price: i.price
             })),
-            payment_method: document.getElementById('payment_method').value,
-            amount_paid: parseFloat(document.getElementById('amount_paid').value) || 0,
-            discount: parseFloat(document.getElementById('discount').value) || 0,
-            customer_id: document.getElementById('customer_id').value || null,
-            _token: '{{ csrf_token() }}'
+            payment_method: paymentMethod,
+            amount_paid: amountPaid,
+            discount: discount,
+            customer_id: customerId,
         };
 
-        this.disabled = true;
-        this.innerHTML = 'Processing...';
+        const btn = this;
+        btn.disabled = true;
+        btn.innerHTML = 'Processing...';
 
         fetch('{{ route('pos.checkout') }}', {
             method: 'POST',
@@ -264,21 +364,41 @@
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                alert(`Sale completed!\nInvoice: ${data.invoice}\nChange: TZS ${Number(data.change).toLocaleString()}`);
-                cart = [];
-                renderCart();
-                // Optional: location.reload();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sale completed!',
+                    html: `<b>Invoice:</b> ${data.invoice}<br><b>Change:</b> TZS ${Number(data.change).toLocaleString()}`,
+                    showCancelButton: true,
+                    confirmButtonText: 'Print Receipt',
+                    cancelButtonText: 'Close',
+                    confirmButtonColor: '#2563eb'
+                }).then(() => {
+                    cart = [];
+                    renderCart();
+                    if (result.isConfirmed && data.sale_id) {
+                        window.open('/sales/' + data.sale_id + '/receipt', '_blank');
+                    }
+                });
             } else {
-                alert(data.message || 'Error completing sale');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message || 'Could not complete sale',
+                    confirmButtonColor: '#2563eb'
+                });
             }
         })
-        .catch(err => {
-            alert('Something went wrong');
-            console.error(err);
+        .catch(() => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Something went wrong. Please try again.',
+                confirmButtonColor: '#2563eb'
+            });
         })
         .finally(() => {
-            this.disabled = false;
-            this.innerHTML = '<i class="bi bi-check2-circle"></i> Complete Sale';
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-check2-circle"></i> Complete Sale';
         });
     });
 

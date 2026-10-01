@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->string('address')->nullable();
+            $table->string('receipt_footer')->nullable();
             $table->string('currency', 10)->default('TZS');
             $table->string('logo')->nullable();
             $table->boolean('is_active')->default(true);

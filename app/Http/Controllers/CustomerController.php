@@ -51,9 +51,14 @@ class CustomerController extends Controller
     {
         $this->authorizeShop($customer);
 
-        $customer->load(['sales' => function ($q) {
-            $q->latest()->take(10);
-        }]);
+        $customer->load([
+            'sales' => function ($q) {
+                $q->latest()->take(10);
+            },
+            'payments' => function ($q) {
+                $q->with('user')->latest()->take(10);
+            },
+        ]);
 
         return view('customers.show', compact('customer'));
     }

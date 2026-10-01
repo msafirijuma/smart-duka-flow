@@ -52,4 +52,16 @@ class SaleController extends Controller
 
         return view('sales.show', compact('sale'));
     }
+
+    // Receipt
+    public function receipt(Sale $sale)
+    {
+        if ($sale->shop_id != session('current_shop_id')) {
+            abort(403);
+        }
+
+        $sale->load(['items', 'user', 'customer', 'shop']);
+
+        return view('sales.receipt', compact('sale'));
+    }
 }

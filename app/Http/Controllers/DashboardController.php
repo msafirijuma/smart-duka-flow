@@ -18,24 +18,44 @@ class DashboardController extends Controller
                 ->with('error', 'Please create a shop first.');
         }
 
-        // Today's sales
+        // 1. Today's Sales (all payment methods)
         $todaySales = Sale::where('shop_id', $shopId)
-            ->whereDate('created_at', today())
             ->where('status', 'completed')
+            ->whereDate('created_at', today())
             ->sum('total');
 
-        // Total products
+        // 2. Today's Collections (cash, mpesa, bank only — real money in)
+        $todayCollections = Sale::where('shop_id', $shopId)
+            ->where('status', 'completed')
+            ->whereDate('created_at', today())
+            ->whereIn('payment_method', ['cash', 'mpesa', 'bank', 'mixed'])
+            ->sum('amount_paid'); // or sum('total') if you prefer sale value of paid sales
+
+        // Better for collections: sum of totals for non-credit sales
+        $todayCollections = Sale::where('shop_id', $shopId)
+            ->where('status', 'completed')
+            ->whereDate('created_at', today())
+            ->whereIn('payment_method', ['cash', 'mpesa', 'bank', 'mixed'])
+            ->sum('total');
+
+        // 3. Today's Credit Sales
+        $todayCredit = Sale::where('shop_id', $shopId)
+            ->where('status', 'completed')
+            ->whereDate('created_at', today())
+            ->where('payment_method', 'credit')
+            ->sum('total');
+
+        // 4. Outstanding Debts (all customers balance)
+        $outstandingDebts = Customer::where('shop_id', $shopId)
+            ->sum('balance');
+
+        // Extra (keep existing)
         $totalProducts = Product::where('shop_id', $shopId)->count();
 
-        // Low stock products
         $lowStock = Product::where('shop_id', $shopId)
             ->whereColumn('stock_quantity', '<=', 'low_stock_threshold')
             ->count();
 
-        // Total customers
-        $totalCustomers = Customer::where('shop_id', $shopId)->count();
-
-        // Recent sales (last 5)
         $recentSales = Sale::where('shop_id', $shopId)
             ->with('user')
             ->latest()
@@ -44,9 +64,11 @@ class DashboardController extends Controller
 
         return view('dashboard', compact(
             'todaySales',
+            'todayCollections',
+            'todayCredit',
+            'outstandingDebts',
             'totalProducts',
             'lowStock',
-            'totalCustomers',
             'recentSales'
         ));
     }

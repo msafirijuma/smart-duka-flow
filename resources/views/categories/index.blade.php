@@ -18,7 +18,7 @@
                         <th>Name</th>
                         <th>Description</th>
                         <th>Status</th>
-                        <th width="140">Actions</th>
+                        <th style="width: 140px; min-width: 140px">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,11 +32,15 @@
                                 </span>
                             </td>
                             <td>
-                                <a href="{{ route('categories.edit', $category) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a href="{{ route('categories.edit', $category) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
                                 <form action="{{ route('categories.destroy', $category) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this category?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                    <button class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </form>
                             </td>
                         </tr>

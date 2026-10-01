@@ -32,7 +32,7 @@
                 <select name="payment_method" class="form-select form-select-sm">
                     <option value="">All</option>
                     <option value="cash" @selected(request('payment_method') == 'cash')>Cash</option>
-                    <option value="mpesa" @selected(request('payment_method') == 'mpesa')>M-Pesa</option>
+                    <option value="mpesa" @selected(request('payment_method') == 'mpesa')>Mobile DPO</option>
                     <option value="bank" @selected(request('payment_method') == 'bank')>Bank</option>
                     <option value="credit" @selected(request('payment_method') == 'credit')>Credit</option>
                 </select>
@@ -47,11 +47,12 @@
 
 <!-- Sales Table -->
 <div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
+    <div class="card-body p-3">
         <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle">
+            <table class="table table-striped table-hover mb-0 align-middle">
                 <thead class="table-light">
                     <tr>
+                        <th>#</th>
                         <th>Invoice</th>
                         <th>Cashier</th>
                         <th>Customer</th>
@@ -64,6 +65,7 @@
                 <tbody>
                     @forelse($sales as $sale)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td class="fw-semibold">{{ $sale->invoice_number }}</td>
                             <td>{{ $sale->user->name ?? '—' }}</td>
                             <td>{{ $sale->customer->name ?? 'Walk-in' }}</td>

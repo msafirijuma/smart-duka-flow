@@ -25,7 +25,7 @@
                         <label class="form-label">Payment Method</label>
                         <select name="payment_method" class="form-select">
                             <option value="cash">Cash</option>
-                            <option value="mpesa">M-Pesa</option>
+                            <option value="mpesa">Mobile DPO</option>
                             <option value="bank">Bank</option>
                         </select>
                     </div>

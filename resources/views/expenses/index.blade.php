@@ -50,18 +50,20 @@
             <table class="table table-hover mb-0 align-middle">
                 <thead class="table-light">
                     <tr>
+                        <th>#</th>
                         <th>Title</th>
                         <th>Category</th>
                         <th>Amount</th>
                         <th>Payment</th>
                         <th>Date</th>
                         <th>By</th>
-                        <th width="130">Actions</th>
+                        <th style="width: 130px; min-width: 130px">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($expenses as $expense)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td class="fw-semibold">{{ $expense->title }}</td>
                             <td>{{ $expense->category ? ucfirst($expense->category) : '—' }}</td>
                             <td class="fw-bold text-danger">TZS {{ number_format($expense->amount, 0) }}</td>

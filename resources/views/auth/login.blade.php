@@ -1,12 +1,12 @@
 <x-guest-layout>
     <div class="container">
         <div class="row justify-content-center min-vh-100 align-items-center">
-            <div class="col-md-5 col-lg-4">
+            <div class="col-md-5">
                 <div class="card shadow-sm border-0">
                     <div class="card-body p-4 p-md-5">
 
                         <div class="text-center mb-4">
-                            <h4 class="fw-bold mb-1">DukaFlow</h4>
+                            <h4 class="fw-bold mb-1">{{ config('app.name', 'DukaFlow') }}</h4>
                             <p class="text-muted small">Sign in to your account</p>
                         </div>
 
@@ -56,12 +56,12 @@
 
                             <div class="text-center">
                                 @if (Route::has('password.request'))
-                                    <a href="{{ route('password.request') }}" class="small text-decoration-none d-block mb-2">
+                                    <a href="{{ route('password.request') }}" class="small text-decoration-none d-block mb-2 text-danger">
                                         Forgot your password?
                                     </a>
                                 @endif
                                 <a href="{{ route('register') }}" class="small text-decoration-none">
-                                    Don't have an account? Register
+                                    <span class="text-dark">Don't have an account?</span> Register
                                 </a>
                             </div>
                         </form>

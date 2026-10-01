@@ -204,13 +204,13 @@
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg sticky-top">
+    <nav class="navbar navbar-expand-lg sticky-top py-2">
         <div class="container">
-            <a class="navbar-brand" href="/">
+            <a class="navbar-brand mb-1" href="/">
                 <i class="bi bi-shop-window me-1"></i> DukaFlow
             </a>
 
-            <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2 pb-1">
                 <!-- Language Toggle -->
                 <div class="btn-group btn-group-sm me-1">
                     <button type="button" class="btn btn-outline-secondary lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
@@ -330,12 +330,12 @@
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="section-title mb-2">
-                    <span class="lang-en">Everything you need to run your shop</span>
-                    <span class="lang-sw">Kila kitu unachohitaji kuendesha duka lako</span>
+                    <span class="lang-en text-white">Everything you need to run your shop</span>
+                    <span class="lang-sw text-white">Kila kitu unachohitaji kuendesha duka lako</span>
                 </h2>
                 <p class="text-muted col-lg-7 mx-auto">
-                    <span class="lang-en">From the counter to reports — full control of your business.</span>
-                    <span class="lang-sw">Kutoka mapokezi hadi ripoti — udhibiti kamili wa biashara yako.</span>
+                    <span class="lang-en text-white">From the counter to reports — full control of your business.</span>
+                    <span class="lang-sw text-white">Kutoka mapokezi hadi ripoti — udhibiti kamili wa biashara yako.</span>
                 </p>
             </div>
 
@@ -502,7 +502,7 @@
                                 <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Up to 3 Shops</li>
                                 <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Unlimited Products</li>
                                 <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Full Reports (Daily–Yearly)</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Customer Credit / Madeni</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Customer Credit </li>
                                 <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Low Stock Alerts</li>
                                 <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Up to 5 Users</li>
                                 <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Expense Tracking</li>
@@ -553,7 +553,7 @@
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="fw-bold text-white mb-2">Meet Our Team</h2>
-                <p class="text-muted">The people behind DukaFlow</p>
+                <p class="text-white">The people behind DukaFlow</p>
             </div>
 
             <div class="row g-4 justify-content-center">

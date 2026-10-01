@@ -80,7 +80,7 @@ class PosController extends Controller
                 $product = Product::where('shop_id', $shopId)->findOrFail($item['id']);
 
                 if ($product->stock_quantity < $item['quantity']) {
-                    throw new \Exception("Insufficient stock for {$product->name}");
+                    throw new \Exception("Insufficient stock for {$product->name}. Available: {$product->stock_quantity}");
                 }
 
                 $lineTotal = $item['price'] * $item['quantity'];

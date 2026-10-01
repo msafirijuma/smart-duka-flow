@@ -16,7 +16,7 @@
                 {{ $currentShop->name }}
             </span>
         @else
-            <span class="text-muted small ms-1">No shop selected. Choose or create a new shop</span>
+            <span class="text-muted small ms-1">Choose or create a new shop</span>
         @endif
     </div>
 
@@ -30,25 +30,30 @@
         {{-- User Dropdown --}}
         <div class="dropdown">
             <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark"
-               data-bs-toggle="dropdown">
-                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
-                     style="width: 36px; height: 36px; font-weight: 600;">
-                    {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
-                </div>
-                <span class="ms-2 d-none d-md-inline">{{ auth()->user()->name ?? 'User' }}</span>
+                id="userDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                role="button">
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 36px; height: 36px; font-weight: 600;">
+                        {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
+                    </div>
+                    <span class="ms-2 d-none d-md-inline">{{ auth()->user()->name ?? 'User' }}</span>
             </a>
 
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
                 <li>
                     <a class="dropdown-item" href="{{ route('shops.index') }}">
                         <i class="bi bi-building me-2"></i> My Shops
                     </a>
                 </li>
-                <li>
-                    <a class="dropdown-item" href="{{ route('settings.index') }}">
-                        <i class="bi bi-gear me-2"></i> Settings
-                    </a>
-                </li>
+                @if(auth()->user()->isOwner())
+                    <li>
+                        <a class="dropdown-item" href="{{ route('settings.index') }}">
+                            <i class="bi bi-gear me-2"></i> Settings
+                        </a>
+                    </li>
+                @endif
                 <li><hr class="dropdown-divider"></li>
                 <li>
                     <form method="POST" action="{{ route('logout') }}">

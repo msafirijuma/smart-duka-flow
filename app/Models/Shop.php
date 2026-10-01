@@ -17,6 +17,7 @@ class Shop extends Model
         'phone',
         'email',
         'address',
+        'receipt_footer',
         'currency',
         'logo',
         'is_active',

@@ -1,12 +1,12 @@
 <x-guest-layout>
     <div class="container">
         <div class="row justify-content-center min-vh-100 align-items-center">
-            <div class="col-md-5 col-lg-4">
+            <div class="col-md-5">
                 <div class="card shadow-sm border-0">
                     <div class="card-body p-4 p-md-5">
 
                         <div class="text-center mb-4">
-                            <h4 class="fw-bold mb-1">DukaFlow</h4>
+                            <h4 class="fw-bold mb-1">{{ config('app.name', 'DukaFlow') }}</h4>
                             <p class="text-muted small">Create your account</p>
                         </div>
 
@@ -61,8 +61,9 @@
                             </div>
 
                             <div class="text-center">
+                                
                                 <a href="{{ route('login') }}" class="small text-decoration-none">
-                                    Already registered? Login
+                                    <span class="text-dark">Already registered?</span> Login
                                 </a>
                             </div>
                         </form>

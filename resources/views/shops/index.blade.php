@@ -5,9 +5,11 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold mb-0">My Shops</h4>
-    <a href="{{ route('shops.create') }}" class="btn btn-primary btn-sm">
-        <i class="bi bi-plus-lg"></i> New Shop
-    </a>
+    @if(auth()->user()->isOwner())
+        <a href="{{ route('shops.create') }}" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg"></i> New Shop
+        </a>
+    @endif
 </div>
 
 <div class="row g-3">
