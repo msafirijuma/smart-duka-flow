@@ -69,7 +69,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">
+                            <td colspan="8" class="text-center text-muted py-4">
                                 No products yet.
                                 <a class="text-decoration-none" href="{{ route('products.create') }}">Add your first product</a>
                             </td>

@@ -39,14 +39,19 @@
         @if(auth()->user()->isManager())
             <div class="section-title">Inventory</div>
             <a href="{{ route('products.index') }}"
-            class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
+                class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
                 <i class="bi bi-box-seam"></i>
                 <span>Products</span>
             </a>
             <a href="{{ route('categories.index') }}"
-            class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}">
+                class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}">
                 <i class="bi bi-tags"></i>
                 <span>Categories</span>
+            </a>
+            <a href="{{ route('stock.index') }}"
+                class="nav-link {{ request()->routeIs('stock.*') ? 'active' : '' }}">
+                <i class="bi bi-boxes"></i>
+                <span>Stock</span>
             </a>
             <a href="{{ route('suppliers.index') }}"
                 class="nav-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}">

@@ -15,6 +15,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\StockController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -46,10 +47,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
 
         Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
-        Route::get('/customers/{customer}/payment', [CustomerController::class, 'paymentForm'])->name('customers.payment');
-        Route::post('/customers/{customer}/payment', [CustomerController::class, 'recordPayment'])->name('customers.payment.store');
-        Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
-
+        
         // ===== OWNER + MANAGER =====
         Route::middleware('role:owner,manager')->group(function () {
 
@@ -75,6 +73,10 @@ Route::middleware('auth')->group(function () {
             Route::post('/purchases', [PurchaseController::class, 'store'])->name('purchases.store');
             Route::get('/purchases/{purchase}', [PurchaseController::class, 'show'])->name('purchases.show');
 
+            // Stock
+            Route::get('/stock', [StockController::class, 'index'])->name('stock.index');
+
+            // Product | Categories | Expenses
             Route::resource('products', ProductController::class)->except(['show']);
             Route::resource('categories', CategoryController::class)->except(['show']);
             Route::resource('expenses', ExpenseController::class)->except(['show']);
@@ -101,6 +103,12 @@ Route::middleware('auth')->group(function () {
             Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
             Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
         });
+
+        // Customers
+        Route::get('/customers/{customer}/payment', [CustomerController::class, 'paymentForm'])->name('customers.payment');
+        Route::post('/customers/{customer}/payment', [CustomerController::class, 'recordPayment'])->name('customers.payment.store');
+        Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
+
     });
 });
 

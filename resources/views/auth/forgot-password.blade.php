@@ -1,25 +1,72 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+    <div class="container">
+        <div class="row justify-content-center min-vh-100 align-items-center">
+            <div class="col-md-5 col-lg-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="text-center mb-4">
+                            <h4 class="fw-bold mb-1">DukaFlow</h4>
+                            <p class="text-muted small mb-0">Forgot your password?</p>
+                        </div>
+
+                        <p class="text-muted small mb-4">
+                            No problem. Enter your email and we’ll send you a reset link.
+                        </p>
+
+                        <form method="POST" action="{{ route('password.email') }}" id="forgotForm" novalidate>
+                            @csrf
+
+                            <div class="mb-4">
+                                <label for="email" class="form-label">Email</label>
+                                <input id="email" type="email" name="email"
+                                       class="form-control @error('email') is-invalid @enderror"
+                                       value="{{ old('email') }}"
+                                       required autofocus autocomplete="username"
+                                       placeholder="you@example.com">
+                            </div>
+
+                            <div class="d-grid mb-3">
+                                <button type="submit" class="btn btn-primary">
+                                    Email Password Reset Link
+                                </button>
+                            </div>
+
+                            <div class="text-center">
+                                <a href="{{ route('login') }}" class="small text-decoration-none">
+                                    ← Back to Login
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <script>
+        document.getElementById('forgotForm')?.addEventListener('submit', function (e) {
+            const emailEl = document.getElementById('email');
+            const email = (emailEl?.value || '').trim();
 
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
+            if (!email) {
+                e.preventDefault();
+                showError('Email is required.', emailEl);
+                return;
+            }
+            if (typeof isValidEmail === 'function' && !isValidEmail(email)) {
+                e.preventDefault();
+                showError('Please enter a valid email address.', emailEl);
+                return;
+            }
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
-        </div>
-    </form>
+            if (typeof showPageLoader === 'function') {
+                showPageLoader('Sending reset link…', 'Check your inbox shortly');
+            }
+            const btn = this.querySelector('button[type="submit"]');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = 'Sending…';
+            }
+        });
+    </script>
 </x-guest-layout>

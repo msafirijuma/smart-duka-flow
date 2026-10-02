@@ -256,6 +256,7 @@
             Toast.fire({
                 icon: 'success',
                 title: "{{ session('success') }}"
+                title: @json(session('success')),
             });
         @endif
         

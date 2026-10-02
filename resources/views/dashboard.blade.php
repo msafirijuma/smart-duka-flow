@@ -86,7 +86,7 @@
 </div>
 
 <!-- Recent Sales -->
-<div class="card border-0 shadow-sm">
+<div class="card border-0 shadow-sm mt-5">
     <div class="card-header bg-white fw-semibold">
         Recent Sales
     </div>
@@ -95,6 +95,7 @@
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
+                        <th>#</th>
                         <th>Invoice</th>
                         <th>Cashier</th>
                         <th>Amount</th>
@@ -105,6 +106,7 @@
                 <tbody>
                     @forelse($recentSales as $sale)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $sale->invoice_number }}</td>
                             <td>{{ $sale->user->name ?? '—' }}</td>
                             <td class="fw-semibold">TZS {{ number_format($sale->total, 0) }}</td>
