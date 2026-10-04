@@ -84,8 +84,8 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">
-                                No sales found.
+                            <td colspan="8" class="text-center text-muted py-4">
+                                No sales found. 
                             </td>
                         </tr>
                     @endforelse

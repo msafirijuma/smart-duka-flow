@@ -13,7 +13,7 @@
     <div class="row g-3">
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm mb-3">
-                <div class="card-header bg-white fw-semibold">Items</div>
+                <div class="card-header fw-semibold">Items</div>
                 <div class="card-body">
                     <div id="itemsContainer">
                         <div class="row g-2 item-row mb-2">

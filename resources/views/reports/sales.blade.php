@@ -4,7 +4,13 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold mb-0">Sales Report</h4>
-    <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary btn-sm">← All Reports</a>
+    <div class="d-flex gap-2">
+        <a href="{{ route('reports.sales.export', request()->query()) }}"
+           class="btn btn-outline-success btn-sm">
+            <i class="bi bi-download"></i> Export CSV
+        </a>
+        <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary btn-sm">← All Reports</a>
+    </div>
 </div>
 
 <form method="GET" class="card border-0 shadow-sm mb-3">
@@ -70,7 +76,7 @@
 </div>
 
 <div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
+    <div class="card-body p-3">
         <div class="table-responsive">
             <table class="table table-striped table-hover mb-0">
                 <thead class="table-light">
@@ -89,7 +95,7 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>
-                                <a href="{{ route('sales.show', $sale) }}">{{ $sale->invoice_number }}</a>
+                                <a href="{{ route('sales.show', $sale) }}" class="text-decoration-none">{{ $sale->invoice_number }}</a>
                             </td>
                             <td>{{ $sale->user->name ?? '—' }}</td>
                             <td>{{ $sale->customer->name ?? 'Walk-in' }}</td>
@@ -99,7 +105,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-4">No sales in this period.</td>
+                            <td colspan="7" class="text-center text-muted py-4">No sales in this period.</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('currency', 10)->default('TZS');
             $table->string('logo')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->foreignId('plan_id')->nullable()->constrained('plans')->nullOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });

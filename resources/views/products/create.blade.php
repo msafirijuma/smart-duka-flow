@@ -8,7 +8,7 @@
             <div class="card-body p-4">
                 <h5 class="fw-bold mb-4">Add New Product</h5>
 
-                <form method="POST" action="{{ route('products.store') }}">
+                <form method="POST" action="{{ route('products.store') }}" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row g-3">
@@ -83,6 +83,21 @@
                             <input type="number" name="low_stock_threshold"
                                    class="form-control"
                                    value="{{ old('low_stock_threshold', 5) }}" required>
+                        </div>
+
+                        <div class="col-md-8">
+                            <label class="form-label">Product image</label>
+                            <input type="file" name="image" id="imageInput"
+                                class="form-control @error('image') is-invalid @enderror"
+                                accept="image/jpeg,image/png,image/webp">
+                            @error('image')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="text-muted">JPG, PNG or WebP · Max 2MB</small>
+                            <div class="mt-2">
+                                <img id="imagePreview" src="" alt="" class="rounded border d-none"
+                                    style="max-height: 120px; object-fit: cover;">
+                            </div>
                         </div>
 
                         <div class="col-12">

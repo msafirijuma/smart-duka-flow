@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<!-- <html lang="{{ str_replace('_', '-', app()->getLocale()) }}"> -->
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,17 +9,23 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <script>
+        (function () {
+            const theme = localStorage.getItem('dukaflow-theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', theme);
+        })();
+    </script>
 
     <style>
         body {
-            background-color: #f1f5f9;
+            background-color: #475a6b;
             font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
         }
         .page-loader {
             position: fixed;
             inset: 0;
             z-index: 9999;
-            background: rgba(241, 245, 249, 0.85);
+            background: #475a6b;
             backdrop-filter: blur(6px);
             display: flex;
             align-items: center;
@@ -55,6 +62,10 @@
         }
         .password-toggle:hover {
             color: #2563eb;
+        }
+        /* Dark mode for landing page */
+        [data-bs-theme="dark"] .page-loader-inner {
+            background: #0f172a;
         }
     </style>
 </head>
@@ -264,17 +275,51 @@
     </script>
 
     <script>
-    function showPageLoader(title, subtitle) {
-        const el = document.getElementById('pageLoader');
-        if (!el) return;
-        document.getElementById('pageLoaderText').textContent = title || 'Please wait…';
-        document.getElementById('pageLoaderSub').textContent = subtitle || 'This will only take a moment';
-        el.classList.remove('d-none');
-    }
+        function showPageLoader(title, subtitle) {
+            const el = document.getElementById('pageLoader');
+            if (!el) return;
+            document.getElementById('pageLoaderText').textContent = title || 'Please wait…';
+            document.getElementById('pageLoaderSub').textContent = subtitle || 'This will only take a moment';
+            el.classList.remove('d-none');
+        }
 
-    function hidePageLoader() {
-        document.getElementById('pageLoader')?.classList.add('d-none');
-    }
-</script>
+        function hidePageLoader() {
+            document.getElementById('pageLoader')?.classList.add('d-none');
+        }
+    </script>
+
+    <script>
+        (function () {
+            const THEME_KEY = 'dukaflow-theme';
+
+            function getTheme() {
+                return localStorage.getItem(THEME_KEY) || 'light';
+            }
+
+            function setTheme(theme) {
+                document.documentElement.setAttribute('data-bs-theme', theme);
+                localStorage.setItem(THEME_KEY, theme);
+                updateIcon(theme);
+            }
+
+            function updateIcon(theme) {
+                const icon = document.getElementById('themeIcon');
+                if (!icon) return;
+                // Dark mode active → show sun 
+                // Light mode → show moon
+                icon.className = theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon-stars';
+            }
+
+            function toggleTheme() {
+                const next = getTheme() === 'dark' ? 'light' : 'dark';
+                setTheme(next);
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                updateIcon(getTheme());
+                document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
+            });
+        })();
+    </script>
 </body>
 </html>

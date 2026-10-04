@@ -15,28 +15,59 @@
                 </div>
             </div>
             <div class="card-body p-2" style="max-height: 70vh; overflow-y: auto;">
-                <div class="row g-2" id="productsGrid">
-                    @foreach($products as $product)
-                        <div class="col-6 col-md-4 col-xl-3 product-item"
-                             data-id="{{ $product->id }}"
-                             data-name="{{ $product->name }}"
-                             data-price="{{ $product->selling_price }}"
-                             data-stock="{{ $product->stock_quantity }}"
-                             data-unit="{{ $product->unit }}">
-                            <div class="card product-card h-100 border shadow-sm" role="button">
-                                <div class="card-body p-2 text-center">
-                                    <div class="fw-semibold small text-truncate">{{ $product->name }}</div>
-                                    <div class="text-primary fw-bold">TZS {{ number_format($product->selling_price, 0) }}</div>
-                                    <small class="text-muted">{{ $product->stock_quantity }} {{ $product->unit }}</small>
-                                </div>
-                            </div>
+    <div class="row g-2" id="productsGrid">
+        @foreach($products as $product)
+            @php
+                $qty = (int) $product->stock_quantity;
+                $threshold = (int) ($product->low_stock_threshold ?? 0);
+            @endphp
+
+            <div class="col-6 col-md-4 col-xl-3 product-item"
+                 data-id="{{ $product->id }}"
+                 data-name="{{ $product->name }}"
+                 data-price="{{ $product->selling_price }}"
+                 data-stock="{{ $qty }}"
+                 data-unit="{{ $product->unit ?? 'pcs' }}"
+                 data-threshold="{{ $threshold }}">
+
+                <div class="card product-card h-100 border shadow-sm" role="button">
+                    {{-- Image (optional) --}}
+                    @if(!empty($product->image))
+                        <img src="{{ asset('storage/' . $product->image) }}"
+                             alt="{{ $product->name }}"
+                             class="card-img-top"
+                             style="height: 80px; object-fit: cover;">
+                    @else
+                        <div class="bg-light d-flex align-items-center justify-content-center"
+                             style="height: 60px;">
+                            <i class="bi bi-box text-muted"></i>
                         </div>
-                    @endforeach
-                </div>
-                <div id="noProducts" class="text-center text-muted py-5 d-none">
-                    No products found
+                    @endif
+
+                    <div class="card-body p-2 text-center">
+                        <div class="fw-semibold small text-truncate">{{ $product->name }}</div>
+                        <div class="text-primary fw-bold small">
+                            TZS {{ number_format($product->selling_price, 0) }}
+                        </div>
+                        <small class="text-muted d-block">
+                            {{ $qty }} {{ $product->unit ?? 'pcs' }}
+                        </small>
+
+                        @if($qty <= 0)
+                            <span class="badge bg-danger mt-1">Out</span>
+                        @elseif($threshold > 0 && $qty <= $threshold)
+                            <span class="badge bg-warning text-dark mt-1">Low</span>
+                        @endif
+                    </div>
                 </div>
             </div>
+        @endforeach
+    </div>
+
+    <div id="noProducts" class="text-center text-muted py-5 d-none">
+        No products found
+    </div>
+</div>
         </div>
     </div>
 
@@ -108,8 +139,13 @@
 @push('styles')
 <style>
     .product-card:hover {
-        border-color: #2563eb !important;
+        /* border-color: #2563eb !important; */
         background: #f0f7ff;
+    }
+    /* Dark mode */
+    [data-bs-theme="dark"] .product-card:hover {
+        border-color: #fff !important;
+        background: #232c3f;
     }
     .cart-item {
         border-bottom: 1px solid #eee;
@@ -259,6 +295,30 @@
         }
     }
 
+    // Preview JS (create + edit)
+    document.getElementById('imageInput')?.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('imagePreview');
+        if (!file || !preview) return;
+
+        if (file.size > 2 * 1024 * 1024) {
+            if (typeof showError === 'function') {
+                showError('Image must be under 2MB.');
+            } else {
+                alert('Image must be under 2MB.');
+            }
+            e.target.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            preview.src = ev.target.result;
+            preview.classList.remove('d-none');
+        };
+        reader.readAsDataURL(file);
+    });
+
     // If user types in amount_paid, mark as manual
     document.getElementById('amount_paid').addEventListener('input', function () {
         this.dataset.manual = '1';
@@ -364,19 +424,40 @@
         .then(res => res.json())
         .then(data => {
             if (data.success) {
+                const saleId = data.sale_id || data.saleId || null;
+                const invoice = data.invoice || '';
+                const change = Number(data.change || 0);
+
                 Swal.fire({
                     icon: 'success',
                     title: 'Sale completed!',
-                    html: `<b>Invoice:</b> ${data.invoice}<br><b>Change:</b> TZS ${Number(data.change).toLocaleString()}`,
-                    showCancelButton: true,
+                    html: `<b>Invoice:</b> ${invoice}<br><b>Change:</b> TZS ${change.toLocaleString()}`,
+                    showDenyButton: true,
+                    showCancelButton: false,
                     confirmButtonText: 'Print Receipt',
-                    cancelButtonText: 'Close',
-                    confirmButtonColor: '#2563eb'
-                }).then(() => {
+                    denyButtonText: 'Close',
+                    confirmButtonColor: '#2563eb',
+                    denyButtonColor: '#6c757d',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    // Clear cart always
                     cart = [];
-                    renderCart();
-                    if (result.isConfirmed && data.sale_id) {
-                        window.open('/sales/' + data.sale_id + '/receipt', '_blank');
+                    if (typeof renderCart === 'function') renderCart();
+
+                    if (result.isConfirmed) {
+                        if (saleId) {
+                            // Full page same tab is more reliable than popup
+                            window.location.href = `/sales/${saleId}/receipt`;
+                            // OR new tab:
+                            // window.open(`/sales/${saleId}/receipt`, '_blank');
+                        } else {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Receipt unavailable',
+                                text: 'Sale was saved but sale ID is missing. Open Sales history to print.',
+                                confirmButtonColor: '#2563eb',
+                            });
+                        }
                     }
                 });
             } else {

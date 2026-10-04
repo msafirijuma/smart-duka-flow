@@ -2,15 +2,41 @@
 @section('title', 'Settings')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex align-items-center mb-4">
     <div>
         <h4 class="fw-bold mb-0">Shop Settings</h4>
         <small class="text-muted">These details appear on receipts and in the app</small>
     </div>
 </div>
 
-<div class="row justify-content-center">
-    <div class="col-lg-7">
+<div class="card border-0 shadow-sm mb-3">
+    <div class="card-body">
+        <h6 class="fw-bold mb-2">Your plan</h6>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <span class="fs-5 fw-bold">{{ $shop->plan->name ?? 'Free' }}</span>
+                <span class="text-muted small ms-1">{{ $shop->plan->price_label ?? '' }}</span>
+                @if($shop->subscription_ends_at)
+                    <div class="small text-muted">Renews / ends {{ $shop->subscription_ends_at->format('d M Y') }}</div>
+                @endif
+            </div>
+            <span class="badge bg-primary">Current</span>
+        </div>
+        @if($shop->plan)
+            <hr>
+            <div class="small text-muted">
+                Products:
+                {{ $shop->plan->max_products === null ? 'Unlimited' : 'up to '.$shop->plan->max_products }}
+                · Staff:
+                {{ $shop->plan->max_staff === null ? 'Unlimited' : 'up to '.$shop->plan->max_staff }}
+                · Exports Reports: {{ $shop->plan->has_exports ? 'Yes' : 'No' }}
+            </div>
+        @endif
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
         <div class="card border-0 shadow-sm">
             <div class="card-body p-4">
                 <form method="POST" action="{{ route('settings.update') }}">
@@ -72,10 +98,11 @@
             </div>
         </div>
 
-        <div class="card border-0 shadow-sm mt-3">
+        <div class="card border-0 shadow-sm mt-3 mb-4">
             <div class="card-body py-3 small text-muted">
-                <strong>Note:</strong> App name on the public website remains <strong>DukaFlow</strong>.
-                Your shop name is what customers see on receipts and inside the system.
+                <!-- <strong>Note:</strong> App name on the public website remains <strong>DukaFlow</strong>.
+                Your shop name is what customers see on receipts and inside the system. -->
+                <strong>Note:</strong> Your shop name is what customers see on receipts and inside the system.
             </div>
         </div>
     </div>

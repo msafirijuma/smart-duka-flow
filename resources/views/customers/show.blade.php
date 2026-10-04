@@ -83,9 +83,10 @@
     </div>
     <div class="card-body p-3">
         <div class="table-responsive">
-            <table class="table table-sm mb-0">
+            <table class="table table-striped table-hover table-sm mb-0">
                 <thead class="table-light">
                     <tr>
+                        <th>#</th>
                         <th>Amount</th>
                         <th>Method</th>
                         <th>Status</th>
@@ -96,6 +97,7 @@
                 <tbody>
                     @forelse($customer->payments as $payment)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td class="fw-semibold text-success">
                                         TZS {{ number_format($payment->amount, 0) }}
                                     </td>
@@ -120,7 +122,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-3">No payments yet.</td>
+                            <td colspan="6" class="text-center text-muted py-3">No payments yet.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -134,9 +136,10 @@
     <div class="card-header bg-white fw-semibold" style="background-color: darkcyan !important">Recent Sales</div>
     <div class="card-body p-3">
         <div class="table-responsive">
-            <table class="table mb-0">
+            <table class="table table-striped table-hover mb-0">
                 <thead class="table-light">
                     <tr>
+                        <th>#</th>
                         <th>Invoice</th>
                         <th>Total</th>
                         <th>Payment</th>
@@ -146,6 +149,7 @@
                 <tbody>
                     @forelse($customer->sales as $sale)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td>
                                 <a href="{{ route('sales.show', $sale) }}" class="text-decoration-none">
                                     {{ $sale->invoice_number }}
@@ -170,7 +174,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-3">No sales yet for this customer.</td>
+                            <td colspan="5" class="text-center text-muted py-3">No sales yet for this customer.</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         return $middleware->alias([
             'shop.selected' => EnsureShopSelected::class,
             'role' => EnsureUserHasRole::class,
+            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
         ]);
         $middleware->web(append: [
             PreventBackHistory::class,

@@ -91,7 +91,7 @@
     </div>
     <div class="card-body p-3">
         <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle">
+            <table class="table table-striped table-bordered table-hover mb-0 align-middle">
                 <thead class="table-light">
                     <tr>
                         <th>#</th>
@@ -138,7 +138,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">
+                            <td colspan="8" class="text-center text-muted py-4">
                                 No purchases from this supplier yet.
                             </td>
                         </tr>

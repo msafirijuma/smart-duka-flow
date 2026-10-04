@@ -16,9 +16,28 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ShopController as AdminShopController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\PlanController as AdminPlanController;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/shops', [AdminShopController::class, 'index'])->name('shops.index');
+    Route::get('/shops/{shop}', [AdminShopController::class, 'show'])->name('shops.show');
+    Route::post('/shops/{shop}/toggle', [AdminShopController::class, 'toggle'])->name('shops.toggle');
+    Route::put('/shops/{shop}/plan', [AdminShopController::class, 'updatePlan'])
+    ->name('shops.update-plan');
+
+    Route::get('/plans', [AdminPlanController::class, 'index'])->name('plans.index');
+
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}', [AdminUserController::class, 'show'])->name('users.show');
 });
 
 Route::middleware('auth')->group(function () {
@@ -77,15 +96,28 @@ Route::middleware('auth')->group(function () {
             Route::get('/stock', [StockController::class, 'index'])->name('stock.index');
 
             // Product | Categories | Expenses
-            Route::resource('products', ProductController::class)->except(['show']);
+            Route::resource('products', ProductController::class);
             Route::resource('categories', CategoryController::class)->except(['show']);
             Route::resource('expenses', ExpenseController::class)->except(['show']);
 
+            // Reports Excel
             Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
             Route::get('/reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
             Route::get('/reports/purchases', [ReportController::class, 'purchases'])->name('reports.purchases');
             Route::get('/reports/expenses', [ReportController::class, 'expenses'])->name('reports.expenses');
             Route::get('/reports/profit', [ReportController::class, 'profit'])->name('reports.profit');
+
+            // Reports PDF
+            Route::get('/reports/sales/export-pdf', [ReportController::class, 'exportSalesPdf'])->name('reports.sales.export-pdf');
+            Route::get('/reports/purchases/export-pdf', [ReportController::class, 'exportPurchasesPdf'])->name('reports.purchases.export-pdf');
+            Route::get('/reports/expenses/export-pdf', [ReportController::class, 'exportExpensesPdf'])->name('reports.expenses.export-pdf');
+            Route::get('/reports/profit/export-pdf', [ReportController::class, 'exportProfitPdf'])->name('reports.profit.export-pdf');
+
+            // Reports ---- Export
+            Route::get('/reports/sales/export', [ReportController::class, 'exportSales'])->name('reports.sales.export');
+            Route::get('/reports/purchases/export', [ReportController::class, 'exportPurchases'])->name('reports.purchases.export');
+            Route::get('/reports/expenses/export', [ReportController::class, 'exportExpenses'])->name('reports.expenses.export');
+            Route::get('/reports/profit/export', [ReportController::class, 'exportProfit'])->name('reports.profit.export');
         });
 
         // ===== OWNER ONLY =====

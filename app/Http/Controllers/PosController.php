@@ -20,7 +20,18 @@ class PosController extends Controller
             ->where('is_active', true)
             ->where('stock_quantity', '>', 0)
             ->orderBy('name')
-            ->get(['id', 'name', 'selling_price', 'stock_quantity', 'unit', 'barcode', 'sku']);
+            ->get([
+                    'id', 'name', 'selling_price', 'stock_quantity',
+                    'unit', 'barcode', 'sku',
+                    'image',              
+                    'low_stock_threshold' 
+                ]);
+
+        // $products = Product::where('shop_id', $shopId)
+        //     ->where('is_active', true)
+        //     ->where('stock_quantity', '>', 0) 
+        //     ->orderBy('name')
+        //     ->get();
 
         $customers = Customer::where('shop_id', $shopId)
             ->orderBy('name')

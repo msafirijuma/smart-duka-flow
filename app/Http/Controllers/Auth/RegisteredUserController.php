@@ -37,7 +37,8 @@ class RegisteredUserController extends Controller
             'required',
             'string',
             'lowercase',
-            'email:rfc,dns', // stronger email check
+            // 'email:rfc,dns', // stronger email check
+            'email',
             'max:255',
             'unique:'.User::class,
         ],

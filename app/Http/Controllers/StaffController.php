@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Services\PlanLimitService;
 
 class StaffController extends Controller
 {
@@ -37,6 +38,10 @@ class StaffController extends Controller
             'role'  => 'required|in:manager,cashier',
             'password' => 'required|string|min:6|confirmed',
         ]);
+
+        if ($msg = (new PlanLimitService)->canAddStaff()) {
+            return back()->with('error', $msg)->withInput();
+        }
 
         // Check if user already exists
         $user = User::where('email', $request->email)->first();

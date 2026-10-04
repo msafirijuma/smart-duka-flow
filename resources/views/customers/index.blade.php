@@ -12,11 +12,12 @@
 </div>
 
 <div class="card border-0 shadow-sm">
-    <div class="card-body p-4">
+    <div class="card-body p-3">
         <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle">
+            <table class="table table-striped table-hover mb-0 align-middle">
                 <thead class="table-light">
                     <tr>
+                        <th>#</th>
                         <th>Name</th>
                         <th>Phone</th>
                         <th style="width: 130px; min-width: 130px">Credit Limit</th>
@@ -27,6 +28,7 @@
                 <tbody>
                     @forelse($customers as $customer)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td class="fw-semibold">{{ $customer->name }}</td>
                             <td>{{ $customer->phone ?? '—' }}</td>
                             <td>TZS {{ number_format($customer->credit_limit, 0) }}</td>
@@ -72,7 +74,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-4">No customers yet.</td>
+                            <td colspan="6" class="text-center text-muted py-4">No customers yet.</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Shop;
+use App\Models\Plan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ShopController extends Controller
 {
@@ -30,26 +32,38 @@ class ShopController extends Controller
             'address' => 'nullable|string|max:500',
         ]);
 
-        $shop = Shop::create([
-            'name'     => $request->name,
-            'slug'     => Str::slug($request->name) . '-' . Str::random(5),
-            'phone'    => $request->phone,
-            'email'    => $request->email,
-            'address'  => $request->address,
-            'currency' => 'TZS',
-        ]);
+        $freePlanId = \App\Models\Plan::where('slug', 'free')->value('id');
 
-        // Attach current user as owner
-        $shop->users()->attach(Auth::id(), [
-            'role'       => 'owner',
-            'is_default' => Auth::user()->shops()->count() === 0, // first shop = default
-        ]);
+        // Unique slug from name
+        $baseSlug = Str::slug($request->name);
+        $slug = $baseSlug;
+        $i = 1;
+        while (\App\Models\Shop::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $i;
+            $i++;
+        }
 
-        // Set as current shop
-        session(['current_shop_id' => $shop->id]);
+        DB::transaction(function () use ($request, $freePlanId, $slug) {
+            $shop = \App\Models\Shop::create([
+                'name'      => $request->name,
+                'slug'      => $slug,          // ← hii ilikuwepo missing
+                'phone'     => $request->phone,
+                'email'     => $request->email,
+                'address'   => $request->address,
+                'is_active' => true,
+                'plan_id'   => $freePlanId,
+            ]);
+
+            $shop->users()->attach(auth()->id(), [
+                'role'       => 'owner',
+                'is_default' => true,
+            ]);
+
+            session(['current_shop_id' => $shop->id]);
+        });
 
         return redirect()->route('dashboard')
-            ->with('success', 'Shop created successfully!');
+            ->with('success', 'Shop created successfully.');
     }
 
     public function switch(Shop $shop)

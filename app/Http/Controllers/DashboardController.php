@@ -62,6 +62,27 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        $lowStockItems = Product::where('shop_id', $shopId)
+            ->where('is_active', true)
+            ->where(function ($q) {
+                $q->whereColumn('stock_quantity', '<=', 'low_stock_threshold')
+                ->orWhere('stock_quantity', '<=', 0);
+            })
+            ->orderBy('stock_quantity')
+            ->take(5)
+            ->get();
+
+        $lowCount = Product::where('shop_id', $shopId)
+            ->where('is_active', true)
+            ->whereColumn('stock_quantity', '<=', 'low_stock_threshold')
+            ->where('stock_quantity', '>', 0)
+            ->count();
+
+        $outCount = Product::where('shop_id', $shopId)
+            ->where('is_active', true)
+            ->where('stock_quantity', '<=', 0)
+            ->count();
+
         return view('dashboard', compact(
             'todaySales',
             'todayCollections',
@@ -69,7 +90,10 @@ class DashboardController extends Controller
             'outstandingDebts',
             'totalProducts',
             'lowStock',
-            'recentSales'
+            'recentSales',
+            'lowStockItems',
+            'lowCount',
+            'outCount',
         ));
     }
 }

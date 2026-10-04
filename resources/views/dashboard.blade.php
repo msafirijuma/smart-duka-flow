@@ -14,7 +14,6 @@
 </div>
 
 <!-- Stats Cards -->
-<!-- 4 Main Cards -->
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
         <div class="card border-0 shadow-sm h-100">
@@ -85,14 +84,45 @@
     </div>
 </div>
 
+@if(($outCount + $lowCount) > 0)
+    <div class="alert alert-warning border-0 shadow-sm d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+        <div>
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+            <strong>Stock attention needed:</strong>
+            @if($outCount > 0)
+                <span class="badge bg-danger ms-1">{{ $outCount }} out</span>
+            @endif
+            @if($lowCount > 0)
+                <span class="badge bg-warning text-dark ms-1">{{ $lowCount }} low</span>
+            @endif
+            <div class="small text-muted mt-1">
+                @foreach($lowStockItems as $p)
+                    {{ $p->name }} ({{ $p->stock_quantity }})@if(!$loop->last), @endif
+                @endforeach
+                @if(($outCount + $lowCount) > 5)
+                    …
+                @endif
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ route('stock.index', ['filter' => 'low']) }}" class="btn btn-sm btn-warning">
+                View low stock
+            </a>
+            <a href="{{ route('purchases.create') }}" class="btn btn-sm btn-outline-dark">
+                Restock
+            </a>
+        </div>
+    </div>
+@endif
+
 <!-- Recent Sales -->
 <div class="card border-0 shadow-sm mt-5">
-    <div class="card-header bg-white fw-semibold">
+    <div class="card-header bg-primary fw-semibold">
         Recent Sales
     </div>
-    <div class="card-body p-0">
+    <div class="card-body p-3">
         <div class="table-responsive">
-            <table class="table table-hover mb-0">
+            <table class="table table-striped table-hover mb-0">
                 <thead class="table-light">
                     <tr>
                         <th>#</th>
@@ -100,7 +130,7 @@
                         <th>Cashier</th>
                         <th>Amount</th>
                         <th>Payment</th>
-                        <th>Date</th>
+                        <th style="width: 120px; min-width: 120px">Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -119,7 +149,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-4">
+                            <td colspan="6" class="text-center text-muted py-4">
                                 No sales yet. <a class="text-decoration-none" href="{{ route('pos.index') }}">Make your first sale</a>
                             </td>
                         </tr>

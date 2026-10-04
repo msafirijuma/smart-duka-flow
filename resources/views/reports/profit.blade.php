@@ -4,7 +4,13 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold mb-0">Profit Summary</h4>
-    <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary btn-sm">← All Reports</a>
+    <div class="d-flex gap-2">
+        <a href="{{ route('reports.profit.export', request()->query()) }}"
+           class="btn btn-outline-success btn-sm">
+            <i class="bi bi-download"></i> Export CSV
+        </a>
+        <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary btn-sm">← All Reports</a>
+    </div>
 </div>
 
 <form method="GET" class="card border-0 shadow-sm mb-4">
@@ -78,7 +84,6 @@
 </div>
 
 <div class="alert alert-info mt-4 mb-0 small">
-    <strong>Note:</strong> COGS inakadiriwa kutoka cost price ya product × quantity iliyouzwa.
-    Si exact FIFO accounting, lakini inatosha kuona faida ya takribani.
+    <strong>Note:</strong> COGS (Cost of goods sold) = cost price of product × quantity sold.
 </div>
 @endsection

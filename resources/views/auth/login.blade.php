@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="container">
         <div class="row justify-content-center min-vh-100 align-items-center">
-            <div class="col-md-5 col-lg-4">
+            <div class="col-md-5">
                 <div class="card shadow-sm border-0">
                     <div class="card-body p-4 p-md-5">
                         <div class="text-center mb-4">
@@ -27,7 +27,7 @@
                                     <input id="password" type="password" name="password"
                                         class="form-control @error('password') is-invalid @enderror"
                                         required minlength="8" autocomplete="current-password"
-                                        placeholder="Min. 8 characters">
+                                        placeholder="Minimum 8 characters">
                                     <button title="Show/hide password" type="button" class="password-toggle" data-target="password" aria-label="Show password">
                                         <i class="bi bi-eye"></i>
                                     </button>
@@ -49,8 +49,9 @@
                                         Forgot your password?
                                     </a>
                                 @endif
+                                <span class="small">Don't have an account?</span>
                                 <a href="{{ route('register') }}" class="small text-decoration-none">
-                                    <span class="text-dark">Don't have an account?</span> Register
+                                     Register
                                 </a>
                             </div>
                         </form>

@@ -10,11 +10,12 @@
 </div>
 
 <div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
+    <div class="card-body p-3">
         <div class="table-responsive">
-            <table class="table table-hover mb-0">
+            <table class="table table-striped table-hover mb-0">
                 <thead class="table-light">
                     <tr>
+                        <th>#</th>
                         <th>Name</th>
                         <th>Description</th>
                         <th>Status</th>
@@ -24,6 +25,7 @@
                 <tbody>
                     @forelse($categories as $category)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td class="fw-semibold">{{ $category->name }}</td>
                             <td>{{ $category->description ?? '—' }}</td>
                             <td>
@@ -46,7 +48,9 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-4">No categories yet.</td>
+                            <td colspan="5" class="text-center text-muted py-4">
+                                No categories yet. <a class="text-decoration-none" href="{{ route('categories.create') }}">Add your first category</a>
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>

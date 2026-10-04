@@ -23,8 +23,8 @@ class Product extends Model
         'stock_quantity',
         'low_stock_threshold',
         'unit',
-        'description',
         'image',
+        'description',
         'is_active',
     ];
 
@@ -53,5 +53,14 @@ class Product extends Model
     public function isLowStock(): bool
     {
         return $this->stock_quantity <= $this->low_stock_threshold;
+    }
+
+    // Accessor method
+    public function getImageUrlAttribute(): string
+    {
+        if ($this->image) {
+            return asset('storage/' . $this->image);
+        }
+        return asset('images/profile3.jpg'); // au data-uri / bi icon
     }
 }

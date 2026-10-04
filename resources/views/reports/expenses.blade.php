@@ -4,7 +4,13 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold mb-0">Expenses Report</h4>
-    <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary btn-sm">← All Reports</a>
+    <div class="d-flex gap-2">
+        <a href="{{ route('reports.expenses.export', request()->query()) }}"
+           class="btn btn-outline-success btn-sm">
+            <i class="bi bi-download"></i> Export CSV
+        </a>
+        <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary btn-sm">← All Reports</a>
+    </div>
 </div>
 
 <form method="GET" class="card border-0 shadow-sm mb-3">
@@ -73,7 +79,7 @@
                         <td>{{ $e->expense_date->format('d M Y') }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="4" class="text-center text-muted py-4">No expenses in this period.</td></tr>
+                    <tr><td colspan="5" class="text-center text-muted py-4">No expenses in this period.</td></tr>
                 @endforelse
             </tbody>
         </table>

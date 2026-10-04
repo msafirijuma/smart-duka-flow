@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +14,12 @@
 
     <!-- FortAwesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script>
+        (function () {
+            const theme = localStorage.getItem('dukaflow-theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', theme);
+        })();
+    </script>
 
     <style>
         :root {
@@ -150,6 +156,65 @@
             color: #64748b;
         }
 
+        /* Dark mode tweaks */
+        [data-bs-theme="dark"] body {
+            background-color: #0f172a;
+        }
+
+        [data-bs-theme="dark"] .sidebar {
+            /* sidebar yako inaweza kubaki navy — optional */
+        }
+
+        [data-bs-theme="dark"] .card {
+            background-color: #1e293b;
+            border-color: #334155;
+        }
+
+        [data-bs-theme="dark"] .bi-moon, [data-bs-theme="dark"] .bi-sun {
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+
+        [data-bs-theme="dark"] .card>.card-footer {
+            background-color: #1e293b !important;
+            border-color: #334155;
+        }
+
+        [data-bs-theme="dark"] a>span {
+            color: #e2e8f0;
+        }
+
+        [data-bs-theme="dark"] .app-footer {
+            background-color: #1e293b;
+            border-color: #334155;
+        }
+
+        [data-bs-theme="dark"] .table {
+            --bs-table-bg: dark;
+        }
+
+        [data-bs-theme="dark"] .top-navbar,
+        [data-bs-theme="dark"] .navbar {
+            background-color: #1e293b !important;
+            border-color: #334155;
+        }
+
+        [data-bs-theme="dark"] .form-control,
+        [data-bs-theme="dark"] .form-select {
+            background-color: #1e293b;
+            border-color: #475569;
+            color: #e2e8f0;
+        }
+
+        [data-bs-theme="dark"] .page-loader {
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        [data-bs-theme="dark"] .page-loader-inner {
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
         @media (max-width: 991.98px) {
             #sidebar {
                 margin-left: calc(var(--sidebar-width) * -1);
@@ -189,13 +254,6 @@
 
         <!-- Page Content -->
         <div class="content-wrapper">
-
-            <!-- @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif -->
 
             @yield('content')
         </div>
@@ -239,35 +297,57 @@
 
     <!-- SweetAlert2 -->
     <script>
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 4000,
-            timerProgressBar: false,
-            didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-            }
-        });
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof Swal === 'undefined') return;
 
-        // success message
-        @if(session('success'))
-            Toast.fire({
-                icon: 'success',
-                title: "{{ session('success') }}"
-                title: @json(session('success')),
-            });
-        @endif
-        
-        @if(session('error'))
-            Toast.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: "{{ session('error') }}",
-                confirmButtonText: 'OK'
-            });
-        @endif
+            @if(session('success'))
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: @json(session('success')),
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: false
+                });
+            @endif
+
+            @if(session('error'))
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: @json(session('error')),
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: false
+                });
+            @endif
+
+            @if(session('status'))
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: @json(session('status')),
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: false
+                });
+            @endif
+
+            @if($errors->any())
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: @json($errors->first()),
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: false
+                });
+            @endif
+        });
     </script>
 
     <!-- Overlays & Offset-->
@@ -326,6 +406,40 @@
             }
         });
         
+    </script>
+
+    <script>
+        (function () {
+            const THEME_KEY = 'dukaflow-theme';
+
+            function getTheme() {
+                return localStorage.getItem(THEME_KEY) || 'light';
+            }
+
+            function setTheme(theme) {
+                document.documentElement.setAttribute('data-bs-theme', theme);
+                localStorage.setItem(THEME_KEY, theme);
+                updateIcon(theme);
+            }
+
+            function updateIcon(theme) {
+                const icon = document.getElementById('themeIcon');
+                if (!icon) return;
+                // Dark mode active → show sun (click to go light)
+                // Light mode → show moon
+                icon.className = theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon-stars';
+            }
+
+            function toggleTheme() {
+                const next = getTheme() === 'dark' ? 'light' : 'dark';
+                setTheme(next);
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                updateIcon(getTheme());
+                document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
+            });
+        })();
     </script>
 
     @stack('scripts')

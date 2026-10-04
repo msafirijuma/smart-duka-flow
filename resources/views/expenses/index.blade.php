@@ -45,9 +45,9 @@
 </div>
 
 <div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
+    <div class="card-body p-3">
         <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle">
+            <table class="table table-striped table-hover mb-0 align-middle">
                 <thead class="table-light">
                     <tr>
                         <th>#</th>
@@ -82,7 +82,9 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">No expenses recorded yet.</td>
+                            <td colspan="8" class="text-center text-muted py-4">
+                                No expenses recorded yet. <a class="text-decoration-none" href="{{ route('expenses.create') }}">Add your first expense</a>
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>

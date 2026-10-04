@@ -10,7 +10,8 @@ class SettingController extends Controller
     public function index()
     {
         $shopId = session('current_shop_id');
-        $shop = Shop::findOrFail($shopId);
+        // $shop = Shop::findOrFail($shopId);
+        $shop = Shop::with('plan')->findOrFail($shopId);
 
         return view('settings.index', compact('shop'));
     }

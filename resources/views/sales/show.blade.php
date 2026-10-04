@@ -82,7 +82,7 @@
 
 <!-- Items -->
 <div class="card border-0 shadow-sm mt-3">
-    <div class="card-header bg-white fw-semibold">
+    <div class="card-header fw-semibold">
         Items Sold
     </div>
     <div class="card-body p-3">

@@ -32,7 +32,7 @@
 </div>
 
 <div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
+    <div class="card-body p-3">
         <div class="table-responsive">
             <table class="table table-striped table-hover mb-0 align-middle">
                 <thead class="table-light">
@@ -67,7 +67,9 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">No purchases yet.</td>
+                            <td colspan="8" class="text-center text-muted py-4">
+                                No purchases yet. <a class="text-decoration-none" href="{{ route('purchases.create') }}">Make your first purchase</a>
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>

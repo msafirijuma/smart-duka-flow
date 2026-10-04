@@ -12,13 +12,13 @@
 <div class="card border-0 shadow-sm">
     <div class="card-body p-4">
         <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle">
+            <table class="table table-striped table-hover mb-0 align-middle">
                 <thead class="table-light">
                     <tr>
                         <th>#</th>
                         <th>Name</th>
                         <th>Phone</th>
-                        <th>Balance (Debt)</th>
+                        <th style="width: 130px; min-width: 130px">Balance (Debt)</th>
                         <th style="width: 130px; min-width: 130px">Actions</th>
                     </tr>
                 </thead>
@@ -58,7 +58,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-4">No suppliers yet.</td>
+                            <td colspan="5" class="text-center text-muted py-4">No suppliers yet.</td>
                         </tr>
                     @endforelse
                 </tbody>

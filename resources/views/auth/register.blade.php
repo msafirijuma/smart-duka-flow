@@ -59,8 +59,9 @@
                             </div>
 
                             <div class="text-center">
+                                <span class="small">Already registered?</span>
                                 <a href="{{ route('login') }}" class="small text-decoration-none">
-                                    <span class="text-dark">Already registered?</span> Login
+                                     Login
                                 </a>
                             </div>
                         </form>

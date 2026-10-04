@@ -8,7 +8,7 @@
             <div class="card-body p-4">
                 <h5 class="fw-bold mb-4">Edit Product</h5>
 
-                <form method="POST" action="{{ route('products.update', $product) }}">
+                <form method="POST" action="{{ route('products.update', $product) }}" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -77,10 +77,29 @@
                                    value="{{ old('low_stock_threshold', $product->low_stock_threshold) }}" required>
                         </div>
 
-                        <div class="col-12">
+                        <div class="col-8">
                             <label class="form-label">Description</label>
                             <textarea name="description" class="form-control" rows="2">{{ old('description', $product->description) }}</textarea>
                         </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label">Product image</label>
+                            @if($product->image)
+                                <div class="mb-2">
+                                    <img src="{{ asset('storage/' . $product->image) }}"
+                                        alt="{{ $product->name }}"
+                                        class="rounded border"
+                                        style="max-height: 100px; object-fit: cover;">
+                                </div>
+                            @endif
+                            <input type="file" name="image" id="imageInput" class="form-control" accept="image/jpeg,image/png,image/webp">
+                            <small class="text-muted">Leave empty to keep current image</small>
+                            <div class="mt-2">
+                                <img id="imagePreview" src="" alt="" class="rounded border d-none" style="max-height: 120px;">
+                            </div>
+                        </div>
+
+                        
                     </div>
 
                     <div class="d-flex gap-2 mt-4">

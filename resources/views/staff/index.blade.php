@@ -12,9 +12,10 @@
 <div class="card border-0 shadow-sm">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle">
+            <table class="table table-striped table-hover mb-0 align-middle">
                 <thead class="table-light">
                     <tr>
+                        <th>#</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role</th>
@@ -24,6 +25,7 @@
                 <tbody>
                     @forelse($shop->users as $user)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td class="fw-semibold">
                                 {{ $user->name }}
                                 @if($user->id === auth()->id())
@@ -52,7 +54,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-4">No staff members yet.</td>
+                            <td colspan="5" class="text-center text-muted py-4">No staff members yet.</td>
                         </tr>
                     @endforelse
                 </tbody>

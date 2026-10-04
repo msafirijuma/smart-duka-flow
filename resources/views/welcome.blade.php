@@ -1,10 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DukaFlow - Smart POS & Inventory</title>
     <meta name="description" content="Manage sales, stock, expenses and profits easily. Built for Tanzanian businesses.">
+
+    <script>
+        (function () {
+            const theme = localStorage.getItem('dukaflow-theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', theme);
+        })();
+    </script>
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -38,7 +45,7 @@
         .navbar-brand i { color: var(--primary); }
 
         .hero {
-            background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+            /* background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%); */
             padding: 4.5rem 0 4rem;
         }
 
@@ -110,7 +117,7 @@
             border-radius: 50%;
         }
         .mockup-body {
-            background: #f8fafc;
+            background: #384a69;
             padding: 1rem;
             min-height: 280px;
         }
@@ -195,6 +202,66 @@
         .lang-sw-inline { display: none; }
         body.sw .lang-en-inline { display: none; }
 
+        /* Dark mode for landing page */
+        [data-bs-theme="dark"] body {
+            background-color: #0f172a !important;
+            color: #e2e8f0;
+        }
+        [data-bs-theme="dark"] .navbar-brand {
+            color: #e2e8f0 !important;
+        }
+        [data-bs-theme="dark"] .navbar,
+        [data-bs-theme="dark"] nav {
+            background-color: #1e293b !important;
+        }
+        [data-bs-theme="dark"] .card {
+            background-color: #35455f;
+            border: 1px solid !important;
+            border-color: #fff;
+        }
+        [data-bs-theme="dark"] .mock-card {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,.06);
+        }
+        [data-bs-theme="dark"] .bi-moon, [data-bs-theme="dark"] .bi-sun {
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        [data-bs-theme="dark"] .footer {
+            background-color: #1e293b;
+            border-color: #334155;
+        }
+        [data-bs-theme="dark"] body>#features {
+            background-color: #2a3951 !important;
+            border-color: #334155;
+        }
+        [data-bs-theme="dark"] body>#team {
+            background-color: #2a3951 !important;
+            border-color: #334155;
+        }
+        [data-bs-theme="dark"] body>#pricing {
+            background-color: #1e293b !important;
+            border-color: #334155;
+        }
+        [data-bs-theme="dark"]  .hero h1 {
+            font-weight: 800;
+            font-size: 2.6rem;
+            line-height: 1.2;
+            color: white !important;
+        }
+        [data-bs-theme="dark"]  .section-title {
+            font-weight: 800;
+            color: white !important;
+        }
+
+        [data-bs-theme="dark"]  .hero .lead {
+            font-size: 1.15rem;
+            color: #f7f7ee;
+            max-width: 520px;
+        }
+
         @media (max-width: 768px) {
             .hero h1 { font-size: 2rem; }
             .price-card.popular { transform: none; }
@@ -229,6 +296,9 @@
                         <span class="lang-sw lang-sw-inline">Anza Sasa</span>
                     </a>
                 @endauth
+                <button type="button" id="themeToggle" class="btn btn-sm btn-link position-fixed top-0 end-0 m-3 text-secondary">
+                    <i class="bi bi-moon-stars" id="themeIcon"></i>
+                </button>
             </div>
         </div>
     </nav>
@@ -263,7 +333,7 @@
                             <span class="lang-sw lang-sw-inline">Ingia</span>
                         </a>
                     </div>
-                    <p class="mt-3 small text-muted">
+                    <p class="mt-3 small">
                         <span class="lang-en">No credit card required to get started • Ready in minutes</span>
                         <span class="lang-sw">Hakuna kadi ya kufungulia inayohitajika • Anza mara moja</span>
                     </p>
@@ -440,8 +510,8 @@
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="section-title mb-2">
-                    <span class="lang-en">Simple & Flexible Pricing</span>
-                    <span class="lang-sw">Bei Rahisi na Zinazobadilika</span>
+                    <span class="lang-en title">Simple & Flexible Pricing</span>
+                    <span class="lang-sw title">Bei Rahisi na Zinazobadilika</span>
                 </h2>
                 <p class="text-muted">
                     <span class="lang-en">Choose the plan that fits your business</span>
@@ -467,10 +537,10 @@
                             <ul class="list-unstyled small mb-4">
                                 <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 1 Shop</li>
                                 <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> POS & Sales</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Up to 100 Products</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Up to 50 Products</li>
                                 <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Basic Reports</li>
                                 <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 1 User</li>
-                                <li class="mb-2 text-muted"><i class="bi bi-x-circle me-2"></i> Customer Credit</li>
+                                <li class="mb-2 text-muted"><i class="bi bi-x-circle me-2"></i> Data Export (Excel / PDF)</li>
                                 <li class="mb-2 text-muted"><i class="bi bi-x-circle me-2"></i> Multi-shop</li>
                             </ul>
 
@@ -494,7 +564,7 @@
                         <div class="card-body p-4 p-lg-5">
                             <h5 class="fw-bold text-center mb-3 text-primary">Business</h5>
                             <div class="text-center mb-1">
-                                <span class="display-5 fw-bold">TZS 25,000</span>
+                                <span class="display-5 fw-bold">TZS 19,999</span>
                             </div>
                             <p class="text-center text-muted small mb-4">per month</p>
 
@@ -522,7 +592,7 @@
                         <div class="card-body p-4 p-lg-5">
                             <h5 class="fw-bold text-center mb-3">Pro</h5>
                             <div class="text-center mb-1">
-                                <span class="display-5 fw-bold">TZS 49,000</span>
+                                <span class="display-5 fw-bold">TZS 39,999</span>
                             </div>
                             <p class="text-center text-muted small mb-4">per month</p>
 
@@ -568,7 +638,7 @@
                                     style="width: 120px; height: 120px; object-fit: cover; border: 3px solid rgba(245, 158, 11, 0.3);">
                             </div>
                             <h5 class="fw-bold mb-1">Msafiri Juma</h5>
-                            <p class="small mb-2" style="color: black">Founder | IT Support</p>
+                            <p class="small mb-2">Founder | IT Support</p>
                             <p class="text-muted small mb-0">
                                 Ensures the platform runs smoothly and provides technical support to our users.
                             </p>
@@ -607,7 +677,7 @@
                                     style="width: 120px; height: 120px; object-fit: cover; border: 3px solid rgba(245, 158, 11, 0.3);">
                             </div>
                             <h5 class="fw-bold mb-1">Noel Faraja</h5>
-                            <p class="small mb-2" style="color: black">Co. Founder | IT Support</p>
+                            <p class="small mb-2">Co. Founder | IT Support</p>
                             <p class="text-muted small mb-0">
                                 Ensuring platform run smoothly and safety.
                             </p>
@@ -709,6 +779,40 @@
             const saved = localStorage.getItem('dukaflow_lang') || 'en';
             setLang(saved);
         });
+    </script>
+
+    <script>
+        (function () {
+            const THEME_KEY = 'dukaflow-theme';
+
+            function getTheme() {
+                return localStorage.getItem(THEME_KEY) || 'light';
+            }
+
+            function setTheme(theme) {
+                document.documentElement.setAttribute('data-bs-theme', theme);
+                localStorage.setItem(THEME_KEY, theme);
+                updateIcon(theme);
+            }
+
+            function updateIcon(theme) {
+                const icon = document.getElementById('themeIcon');
+                if (!icon) return;
+                icon.className = theme === 'dark'
+                    ? 'bi bi-sun'
+                    : 'bi bi-moon-stars';
+            }
+
+            function toggleTheme() {
+                setTheme(getTheme() === 'dark' ? 'light' : 'dark');
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                updateIcon(getTheme());
+                const btn = document.getElementById('themeToggle');
+                if (btn) btn.addEventListener('click', toggleTheme);
+            });
+        })();
     </script>
 </body>
 </html>
