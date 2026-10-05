@@ -9,6 +9,10 @@
     </div>
 </div>
 
+<a href="{{ route('settings.data-export') }}" class="btn btn-outline-success btn-sm mb-4">
+    <i class="bi bi-download"></i> Export my data
+</a>
+
 <div class="card border-0 shadow-sm mb-3">
     <div class="card-body">
         <h6 class="fw-bold mb-2">Your plan</h6>

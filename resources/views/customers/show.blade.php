@@ -132,8 +132,8 @@
 </div>
 
 <!-- Recent Sales -->
-<div class="card border-0 shadow-sm py-3">
-    <div class="card-header bg-white fw-semibold" style="background-color: darkcyan !important">Recent Sales</div>
+<div class="card border-0 shadow-sm pb-3">
+    <div class="card-header bg-white fw-semibold" style="background-color: #363eafcc !important">Recent Sales</div>
     <div class="card-body p-3">
         <div class="table-responsive">
             <table class="table table-striped table-hover mb-0">

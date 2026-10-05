@@ -30,7 +30,7 @@
     </div>
 </div>
 
-{{-- Stats --}}
+<!-- Stats -->
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
         <div class="card border-0 shadow-sm h-100">
@@ -67,7 +67,7 @@
     </div>
 </div>
 
-{{-- Last sale --}}
+<!-- Last sale -->
 <div class="card border-0 shadow-sm mb-3">
     <div class="card-body py-3">
         <div class="text-muted small mb-1">Last sale</div>
@@ -85,9 +85,9 @@
     </div>
 </div>
 
-{{-- Subscription (tayari tuliyotengeneza) --}}
+<!-- Subscription -->
 <div class="card border-0 shadow-sm mb-3">
-    <div class="card-header bg-white fw-semibold">Subscription</div>
+    <div class="card-header bg-success fw-semibold">Subscription</div>
     <div class="card-body">
         <div class="mb-3">
             <span class="text-muted small">Current plan</span>
@@ -135,7 +135,7 @@
 </div>
 
 <div class="card border-0 shadow-sm mb-3">
-    <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center">
+    <div class="card-header bg-primary fw-semibold d-flex justify-content-between align-items-center">
         <span>Subscription history</span>
         <small class="text-muted">Last {{ $shop->subscriptionHistories->count() }} changes</small>
     </div>
@@ -179,13 +179,14 @@
     </div>
 </div>
 
-{{-- Team --}}
+<!-- Team -->
 <div class="card border-0 shadow-sm mb-3">
-    <div class="card-header bg-white fw-semibold">Team ({{ $shop->users->count() }})</div>
-    <div class="card-body p-0">
-        <table class="table mb-0 align-middle">
+    <div class="card-header bg-white fw-semibold" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">Team ({{ $shop->users->count() }})</div>
+    <div class="card-body p-3">
+        <table class="table table-hover table mb-0 align-middle">
             <thead class="table-light">
                 <tr>
+                    <th>#</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Role</th>
@@ -195,6 +196,7 @@
             <tbody>
                 @forelse($shop->users as $u)
                     <tr>
+                        <td>{{ $loop->iteration }}</td>
                         <td class="fw-semibold">{{ $u->name }}</td>
                         <td>{{ $u->email }}</td>
                         <td><span class="badge bg-light text-dark text-uppercase">{{ $u->pivot->role }}</span></td>
@@ -210,7 +212,7 @@
     </div>
 </div>
 
-{{-- Meta --}}
+<!-- Meta -->
 <div class="card border-0 shadow-sm">
     <div class="card-body small text-muted">
         <div>Slug: <code>{{ $shop->slug ?? '—' }}</code></div>

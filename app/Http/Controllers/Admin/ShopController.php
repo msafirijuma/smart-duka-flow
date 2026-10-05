@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
 use App\Models\Plan;
+use App\Models\SubscriptionHistory;
 use Illuminate\Http\Request;
+use App\Services\ActivityLogger;
 
 class ShopController extends Controller
 {
@@ -88,12 +90,34 @@ class ShopController extends Controller
             'note'                 => $request->note,
         ]);
 
+        ActivityLogger::log(
+            'plan.changed',
+            "{$shop->name} plan updated",
+            $shop,
+            $shop->id,
+            [
+                'from_plan_id' => $previousPlanId,
+                'to_plan_id'   => $request->plan_id,
+                'ends_at'      => $request->subscription_ends_at,
+            ]
+        );
+
         return back()->with('success', 'Plan updated successfully.');
     }
 
     public function toggle(Shop $shop)
     {
         $shop->update(['is_active' => !$shop->is_active]);
+
+        // activity log
+        $action = $shop->is_active ? 'shop.activated' : 'shop.suspended';
+        ActivityLogger::log(
+            $action,
+            "Shop {$shop->name} " . ($shop->is_active ? 'activated' : 'suspended'),
+            $shop,
+            $shop->id,
+            ['is_active' => $shop->is_active]
+        );
 
         $status = $shop->is_active ? 'activated' : 'suspended';
 

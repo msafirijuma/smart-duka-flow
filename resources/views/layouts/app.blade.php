@@ -156,13 +156,38 @@
             color: #64748b;
         }
 
-        /* Dark mode tweaks */
+        .password-wrap {
+            position: relative;
+        }
+
+        .password-wrap .form-control {
+            padding-right: 2.75rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: #64748b;
+            padding: 0;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .password-toggle:hover {
+            color: #2563eb;
+        }
+
+        /* Dark mode */
         [data-bs-theme="dark"] body {
             background-color: #0f172a;
         }
 
         [data-bs-theme="dark"] .sidebar {
-            /* sidebar yako inaweza kubaki navy — optional */
+            
         }
 
         [data-bs-theme="dark"] .card {
@@ -246,8 +271,8 @@
 
     <!-- Main Content -->
     <div id="main-content">
-    <!-- Sidebar -->
-    @include('layouts.partials.sidebar')
+        <!-- Sidebar -->
+        @include('layouts.partials.sidebar')
 
         <!-- Header -->
         @include('layouts.partials.header')
@@ -379,6 +404,27 @@
         document.querySelectorAll('.app-sidebar-container a').forEach(link => {
             link.addEventListener('click', () => {
                 if (window.innerWidth < 992) closeSidebar();
+            });
+        });
+    </script>
+
+    <script>
+        // Hide / Show password
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.password-toggle').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const id = this.getAttribute('data-target');
+                    const input = document.getElementById(id);
+                    if (!input) return;
+
+                    const icon = this.querySelector('i');
+                    const isHidden = input.type === 'password';
+
+                    input.type = isHidden ? 'text' : 'password';
+                    icon.classList.toggle('bi-eye', !isHidden);
+                    icon.classList.toggle('bi-eye-slash', isHidden);
+                    this.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+                });
             });
         });
     </script>

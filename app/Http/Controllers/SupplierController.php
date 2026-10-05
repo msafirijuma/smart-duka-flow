@@ -127,6 +127,15 @@ class SupplierController extends Controller
             $supplier->decrement('balance', $request->amount);
         });
 
+        // activity log
+        ActivityLogger::log(
+            'supplier.payment',
+            "Paid supplier {$supplier->name} TZS " . number_format($amount, 0),
+            $supplier,
+            $shopId,
+            ['amount' => $amount]
+        );
+
         return redirect()->route('suppliers.show', $supplier)
             ->with('success', 'Payment to supplier recorded successfully.');
     }

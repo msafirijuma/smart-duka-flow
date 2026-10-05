@@ -2,98 +2,154 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Sale;
-use App\Models\Customer;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Shop;
+use App\Models\Purchase;
+use App\Models\Expense;
+use App\Models\SaleItem;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         $shopId = session('current_shop_id');
+        $shop   = Shop::with('plan')->findOrFail($shopId);
 
-        if (!$shopId) {
-            return redirect()->route('shops.create')
-                ->with('error', 'Please create a shop first.');
-        }
+        $today = today();
 
-        // 1. Today's Sales (all payment methods)
+        // Today's sales (all completed, incl. credit)
         $todaySales = Sale::where('shop_id', $shopId)
             ->where('status', 'completed')
-            ->whereDate('created_at', today())
+            ->whereDate('created_at', $today)
             ->sum('total');
 
-        // 2. Today's Collections (cash, mpesa, bank only — real money in)
+        // Collections = cash-like (not pure credit)
         $todayCollections = Sale::where('shop_id', $shopId)
             ->where('status', 'completed')
-            ->whereDate('created_at', today())
+            ->whereDate('created_at', $today)
             ->whereIn('payment_method', ['cash', 'mpesa', 'bank', 'mixed'])
-            ->sum('amount_paid'); // or sum('total') if you prefer sale value of paid sales
+            ->sum('amount_paid'); // au sum total kulingana na logic yako
 
-        // Better for collections: sum of totals for non-credit sales
-        $todayCollections = Sale::where('shop_id', $shopId)
-            ->where('status', 'completed')
-            ->whereDate('created_at', today())
-            ->whereIn('payment_method', ['cash', 'mpesa', 'bank', 'mixed'])
-            ->sum('total');
+        // If amount_paid not reliable, approximate:
+        // ->where('payment_method', '!=', 'credit')->sum('total');
 
-        // 3. Today's Credit Sales
         $todayCredit = Sale::where('shop_id', $shopId)
             ->where('status', 'completed')
-            ->whereDate('created_at', today())
+            ->whereDate('created_at', $today)
             ->where('payment_method', 'credit')
             ->sum('total');
 
-        // 4. Outstanding Debts (all customers balance)
         $outstandingDebts = Customer::where('shop_id', $shopId)
+            ->where('balance', '>', 0)
             ->sum('balance');
 
-        // Extra (keep existing)
-        $totalProducts = Product::where('shop_id', $shopId)->count();
+        $productsCount = Product::where('shop_id', $shopId)->count();
 
-        $lowStock = Product::where('shop_id', $shopId)
-            ->whereColumn('stock_quantity', '<=', 'low_stock_threshold')
-            ->count();
-
-        $recentSales = Sale::where('shop_id', $shopId)
-            ->with('user')
-            ->latest()
-            ->take(5)
-            ->get();
-
-        $lowStockItems = Product::where('shop_id', $shopId)
-            ->where('is_active', true)
+        $lowStockCount = Product::where('shop_id', $shopId)
             ->where(function ($q) {
                 $q->whereColumn('stock_quantity', '<=', 'low_stock_threshold')
-                ->orWhere('stock_quantity', '<=', 0);
+                  ->orWhere('stock_quantity', '<=', 0);
+            })
+            ->count();
+
+        $customersCount = Customer::where('shop_id', $shopId)->count();
+
+        $salesThisMonth = Sale::where('shop_id', $shopId)
+            ->where('status', 'completed')
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->sum('total');
+
+        // Last 7 days chart
+        $chartLabels = [];
+        $chartData   = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $d = now()->subDays($i);
+            $chartLabels[] = $d->format('D d');
+            $chartData[] = (float) Sale::where('shop_id', $shopId)
+                ->where('status', 'completed')
+                ->whereDate('created_at', $d)
+                ->sum('total');
+        }
+
+        // -------- Last 7 days: Purchases, Expenses, Profit, New customers --------
+        $purchaseChartData = [];
+        $expenseChartData  = [];
+        $profitChartData   = [];
+        $customerChartData = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $d = now()->subDays($i);
+
+            $daySales = (float) Sale::where('shop_id', $shopId)
+                ->where('status', 'completed')
+                ->whereDate('created_at', $d)
+                ->sum('total');
+
+            $dayCogs = (float) SaleItem::whereHas('sale', function ($q) use ($shopId, $d) {
+                    $q->where('shop_id', $shopId)
+                    ->where('status', 'completed')
+                    ->whereDate('created_at', $d);
+                })
+                ->join('products', 'sale_items.product_id', '=', 'products.id')
+                ->selectRaw('COALESCE(SUM(sale_items.quantity * products.cost_price), 0) as cogs')
+                ->value('cogs');
+
+            $dayPurchases = (float) Purchase::where('shop_id', $shopId)
+                ->whereDate('purchase_date', $d)
+                ->sum('total');
+
+            $dayExpenses = (float) Expense::where('shop_id', $shopId)
+                ->whereDate('expense_date', $d)
+                ->sum('amount');
+
+            $dayNewCustomers = (int) Customer::where('shop_id', $shopId)
+                ->whereDate('created_at', $d)
+                ->count();
+
+            $purchaseChartData[] = $dayPurchases;
+            $expenseChartData[]  = $dayExpenses;
+            $profitChartData[]   = $daySales - $dayCogs - $dayExpenses; // approx net
+            $customerChartData[] = $dayNewCustomers;
+        }
+
+        $lowStockItems = Product::where('shop_id', $shopId)
+            ->where(function ($q) {
+                $q->whereColumn('stock_quantity', '<=', 'low_stock_threshold')
+                  ->orWhere('stock_quantity', '<=', 0);
             })
             ->orderBy('stock_quantity')
-            ->take(5)
+            ->take(6)
             ->get();
 
-        $lowCount = Product::where('shop_id', $shopId)
-            ->where('is_active', true)
-            ->whereColumn('stock_quantity', '<=', 'low_stock_threshold')
-            ->where('stock_quantity', '>', 0)
-            ->count();
-
-        $outCount = Product::where('shop_id', $shopId)
-            ->where('is_active', true)
-            ->where('stock_quantity', '<=', 0)
-            ->count();
+        $recentSales = Sale::with(['user', 'customer'])
+            ->where('shop_id', $shopId)
+            ->where('status', 'completed')
+            ->latest()
+            ->take(8)
+            ->get();
 
         return view('dashboard', compact(
+            'shop',
             'todaySales',
             'todayCollections',
             'todayCredit',
             'outstandingDebts',
-            'totalProducts',
-            'lowStock',
-            'recentSales',
+            'productsCount',
+            'lowStockCount',
+            'customersCount',
+            'salesThisMonth',
+            'chartLabels',
+            'chartData',
             'lowStockItems',
-            'lowCount',
-            'outCount',
+            'recentSales',
+            'purchaseChartData',
+            'expenseChartData',
+            'profitChartData',
+            'customerChartData',
         ));
     }
 }

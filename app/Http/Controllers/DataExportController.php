@@ -125,6 +125,14 @@ class DataExportController extends Controller
 
         $zip->close();
 
+        // activity log
+        ActivityLogger::log(
+            'data.exported',
+            "Shop data exported: {$shop->name}",
+            $shop,
+            $shop->id
+        );
+
         return response()->download($tmpZip, $filename, [
             'Content-Type' => 'application/zip',
         ])->deleteFileAfterSend(true);

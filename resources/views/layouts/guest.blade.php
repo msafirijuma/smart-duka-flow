@@ -140,7 +140,7 @@
             }
         });
 
-        // Hide / Show passowrd
+        // Hide / Show password
         document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.password-toggle').forEach(function (btn) {
             btn.addEventListener('click', function () {

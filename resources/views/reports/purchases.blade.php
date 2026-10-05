@@ -2,9 +2,13 @@
 @section('title', 'Purchases Report')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-md-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold mb-0">Purchases Report</h4>
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 mt-3 mt-md-0">
+        <a href="{{ route('reports.purchases.export-pdf', request()->query()) }}" 
+            class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-filetype-pdf"></i> Export PDF
+        </a>
         <a href="{{ route('reports.purchases.export', request()->query()) }}"
            class="btn btn-outline-success btn-sm">
             <i class="bi bi-download"></i> Export CSV
@@ -55,7 +59,7 @@
                 @forelse($purchases as $p)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td><a href="{{ route('purchases.show', $p) }}">{{ $p->reference }}</a></td>
+                        <td><a href="{{ route('purchases.show', $p) }}" class="text-decoration-none">{{ $p->reference }}</a></td>
                         <td>{{ $p->supplier->name ?? '—' }}</td>
                         <td class="fw-semibold">TZS {{ number_format($p->total, 0) }}</td>
                         <td><span class="badge bg-light text-dark text-uppercase">{{ $p->payment_method }}</span></td>

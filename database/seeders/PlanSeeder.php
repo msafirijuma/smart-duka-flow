@@ -25,7 +25,7 @@ class PlanSeeder extends Seeder
             [
                 'name' => 'Pro',
                 'slug' => 'pro',
-                'price_label' => 'TZS 25,000/mo',
+                'price_label' => 'TZS 19,999/mo',
                 'price' => 25000,
                 'max_products' => 500,
                 'max_staff' => 10,
@@ -37,7 +37,7 @@ class PlanSeeder extends Seeder
             [
                 'name' => 'Business',
                 'slug' => 'business',
-                'price_label' => 'TZS 75,000/mo',
+                'price_label' => 'TZS 39,999/mo',
                 'price' => 75000,
                 'max_products' => null, // unlimited
                 'max_staff' => null,

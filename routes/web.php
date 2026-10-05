@@ -16,10 +16,13 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\DataExportController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ShopController as AdminShopController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\PlanController as AdminPlanController;
+use App\Http\Controllers\Admin\SettingController as AdminSettingController;
+use App\Http\Controllers\Admin\ActivityLogController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,14 +31,29 @@ Route::get('/', function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
+    // Shops
     Route::get('/shops', [AdminShopController::class, 'index'])->name('shops.index');
     Route::get('/shops/{shop}', [AdminShopController::class, 'show'])->name('shops.show');
     Route::post('/shops/{shop}/toggle', [AdminShopController::class, 'toggle'])->name('shops.toggle');
     Route::put('/shops/{shop}/plan', [AdminShopController::class, 'updatePlan'])
     ->name('shops.update-plan');
 
+    // Packages (Plans)
     Route::get('/plans', [AdminPlanController::class, 'index'])->name('plans.index');
+    Route::get('/plans/create', [AdminPlanController::class, 'create'])->name('plans.create');
+    Route::post('/plans', [AdminPlanController::class, 'store'])->name('plans.store');
+    Route::get('/plans/{plan}/edit', [AdminPlanController::class, 'edit'])->name('plans.edit');
+    Route::put('/plans/{plan}', [AdminPlanController::class, 'update'])->name('plans.update');
+    Route::delete('/plans/{plan}', [AdminPlanController::class, 'destroy'])->name('plans.destroy');
 
+    // Settings
+    Route::get('/settings/edit', [AdminSettingController::class, 'edit'])->name('settings.edit');
+    Route::put('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
+
+    // Activity logs
+    Route::get('/activity', [ActivityLogController::class, 'index'])->name('activity.index');
+
+    // User
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::get('/users/{user}', [AdminUserController::class, 'show'])->name('users.show');
 });
@@ -128,6 +146,12 @@ Route::middleware('auth')->group(function () {
             Route::get('/staff/{user}/edit', [StaffController::class, 'edit'])->name('staff.edit');
             Route::put('/staff/{user}', [StaffController::class, 'update'])->name('staff.update');
             Route::delete('/staff/{user}', [StaffController::class, 'destroy'])->name('staff.destroy');
+
+            // Data Export
+            Route::get('/settings/data-export', [DataExportController::class, 'index'])
+                ->name('settings.data-export');
+            Route::post('/settings/data-export', [DataExportController::class, 'download'])
+                ->name('settings.data-export.download');
 
             Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
             Route::delete('/suppliers/{supplier}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');

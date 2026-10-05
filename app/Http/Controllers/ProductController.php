@@ -150,6 +150,14 @@ class ProductController extends Controller
         }
         $product->delete();
 
+        // activity
+        ActivityLogger::log(
+            'product.deleted',
+            "Product {$product->name} deleted",
+            null,
+            $shopId
+        );
+
         return redirect()->route('products.index')
             ->with('success', 'Product deleted successfully.');
     }

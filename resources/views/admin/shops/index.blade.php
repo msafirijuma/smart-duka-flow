@@ -25,7 +25,7 @@
     </div>
 </form>
 
-<div class="card border-0 shadow-sm">
+<div class="card border-0 shadow-sm p-3">
     <div class="table-responsive">
         <table class="table table-striped table-hover mb-0 align-middle">
             <thead class="table-light">

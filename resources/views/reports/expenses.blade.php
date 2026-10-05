@@ -2,9 +2,13 @@
 @section('title', 'Expenses Report')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-md-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold mb-0">Expenses Report</h4>
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 mt-3 mt-md-0">
+        <a href="{{ route('reports.expenses.export-pdf', request()->query()) }}" 
+            class="btn btn-outline-danger btn-sm">
+             <i class="bi bi-filetype-pdf"></i> Export PDF
+        </a>
         <a href="{{ route('reports.expenses.export', request()->query()) }}"
            class="btn btn-outline-success btn-sm">
             <i class="bi bi-download"></i> Export CSV

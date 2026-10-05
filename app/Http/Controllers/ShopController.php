@@ -32,21 +32,21 @@ class ShopController extends Controller
             'address' => 'nullable|string|max:500',
         ]);
 
-        $freePlanId = \App\Models\Plan::where('slug', 'free')->value('id');
+        $freePlanId = Plan::where('slug', 'free')->value('id');
 
         // Unique slug from name
         $baseSlug = Str::slug($request->name);
         $slug = $baseSlug;
         $i = 1;
-        while (\App\Models\Shop::where('slug', $slug)->exists()) {
+        while (Shop::where('slug', $slug)->exists()) {
             $slug = $baseSlug . '-' . $i;
             $i++;
         }
 
         DB::transaction(function () use ($request, $freePlanId, $slug) {
-            $shop = \App\Models\Shop::create([
+            $shop = Shop::create([
                 'name'      => $request->name,
-                'slug'      => $slug,          // ← hii ilikuwepo missing
+                'slug'      => $slug,          
                 'phone'     => $request->phone,
                 'email'     => $request->email,
                 'address'   => $request->address,
@@ -58,6 +58,14 @@ class ShopController extends Controller
                 'role'       => 'owner',
                 'is_default' => true,
             ]);
+
+            // activity log
+            ActivityLogger::log(
+                'shop.created',
+                "Shop {$shop->name} created",
+                $shop,
+                $shop->id
+            );
 
             session(['current_shop_id' => $shop->id]);
         });

@@ -6,13 +6,13 @@ use App\Models\Sale;
 use App\Models\Purchase;
 use App\Models\Expense;
 use App\Models\SaleItem;
+use App\Models\Shop;
 use App\Services\PlanLimitService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-
 
 class ReportController extends Controller
 {
@@ -144,6 +144,10 @@ class ReportController extends Controller
         ));
     }
 
+    // =========================================================
+    // EXCEL EXPORTS
+    // =========================================================
+
     public function exportSales(Request $request): StreamedResponse |RedirectResponse
     {
         if ($msg = (new PlanLimitService)->canExport()) {
@@ -190,33 +194,6 @@ class ReportController extends Controller
         ]);
     }
 
-    public function exportSalesPdf(Request $request)
-    {
-        if ($msg = (new \App\Services\PlanLimitService)->canExport()) {
-            return back()->with('error', $msg);
-        }
-
-        $shopId = session('current_shop_id');
-        $from = $request->get('from', now()->startOfMonth()->toDateString());
-        $to   = $request->get('to', now()->toDateString());
-
-        $shop = \App\Models\Shop::find($shopId);
-        $sales = \App\Models\Sale::with(['user', 'customer'])
-            ->where('shop_id', $shopId)
-            ->where('status', 'completed')
-            ->whereDate('created_at', '>=', $from)
-            ->whereDate('created_at', '<=', $to)
-            ->latest()
-            ->get();
-
-        $total = $sales->sum('total');
-
-        $pdf = Pdf::loadView('reports.pdf.sales', compact('sales', 'shop', 'from', 'to', 'total'))
-            ->setPaper('a4', 'portrait');
-
-        return $pdf->download("sales_{$from}_to_{$to}.pdf");
-    }
-
     public function exportPurchases(Request $request): StreamedResponse |RedirectResponse
     {
         if ($msg = (new PlanLimitService)->canExport()) {
@@ -261,33 +238,6 @@ class ReportController extends Controller
         ]);
     }
 
-    public function exportPurchasesPdf(Request $request)
-    {
-        if ($msg = (new \App\Services\PlanLimitService)->canExport()) {
-            return back()->with('error', $msg);
-        }
-
-        $shopId = session('current_shop_id');
-        $from = $request->get('from', now()->startOfMonth()->toDateString());
-        $to   = $request->get('to', now()->toDateString());
-
-        $shop = \App\Models\Shop::find($shopId);
-        $sales = \App\Models\Sale::with(['user', 'customer'])
-            ->where('shop_id', $shopId)
-            ->where('status', 'completed')
-            ->whereDate('created_at', '>=', $from)
-            ->whereDate('created_at', '<=', $to)
-            ->latest()
-            ->get();
-
-        $total = $sales->sum('total');
-
-        $pdf = Pdf::loadView('reports.pdf.sales', compact('sales', 'shop', 'from', 'to', 'total'))
-            ->setPaper('a4', 'portrait');
-
-        return $pdf->download("sales_{$from}_to_{$to}.pdf");
-    }
-
     public function exportExpenses(Request $request): StreamedResponse |RedirectResponse
     {
         if ($msg = (new PlanLimitService)->canExport()) {
@@ -328,33 +278,6 @@ class ReportController extends Controller
         }, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
-    }
-
-    public function exportExpensesPdf(Request $request)
-    {
-        if ($msg = (new \App\Services\PlanLimitService)->canExport()) {
-            return back()->with('error', $msg);
-        }
-
-        $shopId = session('current_shop_id');
-        $from = $request->get('from', now()->startOfMonth()->toDateString());
-        $to   = $request->get('to', now()->toDateString());
-
-        $shop = \App\Models\Shop::find($shopId);
-        $sales = \App\Models\Sale::with(['user', 'customer'])
-            ->where('shop_id', $shopId)
-            ->where('status', 'completed')
-            ->whereDate('created_at', '>=', $from)
-            ->whereDate('created_at', '<=', $to)
-            ->latest()
-            ->get();
-
-        $total = $sales->sum('total');
-
-        $pdf = Pdf::loadView('reports.pdf.sales', compact('sales', 'shop', 'from', 'to', 'total'))
-            ->setPaper('a4', 'portrait');
-
-        return $pdf->download("sales_{$from}_to_{$to}.pdf");
     }
 
     public function exportProfit(Request $request): StreamedResponse |RedirectResponse
@@ -411,9 +334,13 @@ class ReportController extends Controller
         ]);
     }
 
-    public function exportProfitPdf(Request $request)
+    // =========================================================
+    // PDF EXPORTS
+    // =========================================================
+
+    public function exportSalesPdf(Request $request)
     {
-        if ($msg = (new \App\Services\PlanLimitService)->canExport()) {
+        if ($msg = (new PlanLimitService)->canExport()) {
             return back()->with('error', $msg);
         }
 
@@ -421,20 +348,121 @@ class ReportController extends Controller
         $from = $request->get('from', now()->startOfMonth()->toDateString());
         $to   = $request->get('to', now()->toDateString());
 
-        $shop = \App\Models\Shop::find($shopId);
-        $sales = \App\Models\Sale::with(['user', 'customer'])
+        $shop = Shop::findOrFail($shopId);
+
+        $sales = Sale::with(['user', 'customer'])
             ->where('shop_id', $shopId)
             ->where('status', 'completed')
             ->whereDate('created_at', '>=', $from)
             ->whereDate('created_at', '<=', $to)
+            ->when($request->filled('payment_method'), fn ($q) =>
+                $q->where('payment_method', $request->payment_method)
+            )
             ->latest()
             ->get();
 
         $total = $sales->sum('total');
 
-        $pdf = Pdf::loadView('reports.pdf.sales', compact('sales', 'shop', 'from', 'to', 'total'))
+        $pdf = Pdf::loadView('reports.pdf.sales', compact('shop', 'sales', 'from', 'to', 'total'))
             ->setPaper('a4', 'portrait');
 
         return $pdf->download("sales_{$from}_to_{$to}.pdf");
+    }
+
+    public function exportPurchasesPdf(Request $request)
+    {
+        if ($msg = (new PlanLimitService)->canExport()) {
+            return back()->with('error', $msg);
+        }
+
+        $shopId = session('current_shop_id');
+        $from = $request->get('from', now()->startOfMonth()->toDateString());
+        $to   = $request->get('to', now()->toDateString());
+
+        $shop = Shop::findOrFail($shopId);
+
+        $purchases = Purchase::with(['supplier', 'user'])
+            ->where('shop_id', $shopId)
+            ->whereDate('purchase_date', '>=', $from)
+            ->whereDate('purchase_date', '<=', $to)
+            ->latest('purchase_date')
+            ->get();
+
+        $total = $purchases->sum('total');
+
+        $pdf = Pdf::loadView('reports.pdf.purchases', compact('shop', 'purchases', 'from', 'to', 'total'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download("purchases_{$from}_to_{$to}.pdf");
+    }
+
+    public function exportExpensesPdf(Request $request)
+    {
+        if ($msg = (new PlanLimitService)->canExport()) {
+            return back()->with('error', $msg);
+        }
+
+        $shopId = session('current_shop_id');
+        $from = $request->get('from', now()->startOfMonth()->toDateString());
+        $to   = $request->get('to', now()->toDateString());
+
+        $shop = Shop::findOrFail($shopId);
+
+        $expenses = Expense::with('user')
+            ->where('shop_id', $shopId)
+            ->whereDate('expense_date', '>=', $from)
+            ->whereDate('expense_date', '<=', $to)
+            ->latest('expense_date')
+            ->get();
+
+        $total = $expenses->sum('amount');
+
+        $pdf = Pdf::loadView('reports.pdf.expenses', compact('shop', 'expenses', 'from', 'to', 'total'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download("expenses_{$from}_to_{$to}.pdf");
+    }
+
+    public function exportProfitPdf(Request $request)
+    {
+        if ($msg = (new PlanLimitService)->canExport()) {
+            return back()->with('error', $msg);
+        }
+
+        $shopId = session('current_shop_id');
+        $from = $request->get('from', now()->startOfMonth()->toDateString());
+        $to   = $request->get('to', now()->toDateString());
+
+        $shop = Shop::findOrFail($shopId);
+
+        $revenue = Sale::where('shop_id', $shopId)
+            ->where('status', 'completed')
+            ->whereDate('created_at', '>=', $from)
+            ->whereDate('created_at', '<=', $to)
+            ->sum('total');
+
+        $cogs = SaleItem::whereHas('sale', function ($q) use ($shopId, $from, $to) {
+                $q->where('shop_id', $shopId)
+                ->where('status', 'completed')
+                ->whereDate('created_at', '>=', $from)
+                ->whereDate('created_at', '<=', $to);
+            })
+            ->join('products', 'sale_items.product_id', '=', 'products.id')
+            ->selectRaw('COALESCE(SUM(sale_items.quantity * products.cost_price), 0) as cogs')
+            ->value('cogs') ?? 0;
+
+        $expensesTotal = Expense::where('shop_id', $shopId)
+            ->whereDate('expense_date', '>=', $from)
+            ->whereDate('expense_date', '<=', $to)
+            ->sum('amount');
+
+        $gross = $revenue - $cogs;
+        $net = $gross - $expensesTotal;
+
+        $pdf = Pdf::loadView('reports.pdf.profit', compact(
+            'shop', 'from', 'to', 'revenue', 'cogs', 'expensesTotal', 'gross', 'net'
+        ))->setPaper('a4', 'portrait');
+
+        return $pdf->download("profit_{$from}_to_{$to}.pdf");
     }
 }

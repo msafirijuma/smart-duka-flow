@@ -34,10 +34,15 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" name="remember" id="remember_me">
-                                <label class="form-check-label" for="remember_me">Remember me</label>
-                            </div>
+                            <input type="checkbox"
+                                name="remember"
+                                id="remember"
+                                class="form-check-input"
+                                value="1"
+                                {{ old('remember') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="remember">
+                                Remember me
+                            </label>
 
                             <div class="d-grid mb-3">
                                 <button type="submit" class="btn btn-primary">Log in</button>

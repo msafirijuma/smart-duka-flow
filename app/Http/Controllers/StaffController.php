@@ -69,6 +69,15 @@ class StaffController extends Controller
         // Assign Spatie role
         $user->assignRole($request->role);
 
+        // activity log
+        ActivityLogger::log(
+            'staff.created',
+            "Staff {$user->name} added as {$role}",
+            $user,
+            $shopId,
+            ['role' => $role]
+        );
+
         return redirect()->route('staff.index')
             ->with('success', 'Staff member added successfully.');
     }
@@ -105,6 +114,9 @@ class StaffController extends Controller
         // Sync Spatie role
         $user->syncRoles([$request->role]);
 
+        // activity log
+        ActivityLogger::log('staff.updated', "Staff {$user->name} updated", $user, $shopId);
+
         return redirect()->route('staff.index')
             ->with('success', 'Staff role updated successfully.');
     }
@@ -117,6 +129,9 @@ class StaffController extends Controller
         if ($user->id === auth()->id()) {
             return back()->with('error', 'You cannot remove yourself.');
         }
+
+        // activity log
+        ActivityLogger::log('staff.deleted', "Staff {$name} removed", null, $shopId);
 
         $user->shops()->detach($shopId);
 

@@ -11,7 +11,7 @@
     </div>
 </form>
 
-<div class="card border-0 shadow-sm">
+<div class="card border-0 shadow-sm p-3">
     <table class="table table-striped table-hover mb-0">
         <thead class="table-light">
             <tr>

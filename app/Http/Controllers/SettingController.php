@@ -37,6 +37,14 @@ class SettingController extends Controller
             'receipt_footer' => $request->receipt_footer,
         ]);
 
+        // activity log
+        ActivityLogger::log(
+            'settings.updated',
+            'Shop settings updated',
+            $shop,
+            $shop->id
+        );
+
         return redirect()->route('settings.index')
             ->with('success', 'Shop settings updated successfully.');
     }

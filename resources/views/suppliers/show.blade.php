@@ -85,7 +85,7 @@
 
 <!-- Purchase History -->
 <div class="card border-0 shadow-sm mb-5">
-    <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center">
+    <div class="card-header bg-primary fw-semibold d-flex justify-content-between align-items-center">
         <span>Purchase History</span>
         <small class="text-muted">Last {{ $supplier->purchases->count() }} purchases</small>
     </div>
@@ -151,7 +151,7 @@
 
 <!-- Payment history -->
 <div class="card border-0 shadow-sm h-100">
-    <div class="card-header bg-white fw-semibold">Payment History</div>
+    <div class="card-header bg-success fw-semibold">Payment History</div>
     <div class="card-body p-3">
         <div class="table-responsive">
             <table class="table table-hover mb-0 align-middle">

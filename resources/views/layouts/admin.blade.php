@@ -7,6 +7,10 @@
     <title>@yield('title', 'Admin') — DukaFlow</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <script>
         (function () {
             const theme = localStorage.getItem('dukaflow-theme') || 'light';
@@ -14,19 +18,50 @@
         })();
     </script>
     <style>
-        body { background: #f1f5f9; }
+        body { 
+            background: #f1f5f9; 
+        }
         .admin-sidebar {
-            width: 240px; min-height: 100vh; background: #0f172a;
+            width: 240px; 
+            min-height: 100vh; 
+            background: #1e293b !important;
             position: fixed; left: 0; top: 0;
         }
         .admin-sidebar .nav-link {
-            color: #94a3b8; border-radius: 8px; margin: 2px 8px; padding: 8px 12px;
+            color: #94a3b8; 
+            border-radius: 8px; 
+            margin: 2px 8px; 
+            padding: 8px 12px;
         }
         .admin-sidebar .nav-link:hover, .admin-sidebar .nav-link.active {
             background: #1e293b; color: #fff;
         }
-        .admin-main { margin-left: 240px; padding: 1.5rem; }
-        .admin-brand { color: #fff; font-weight: 700; padding: 1.25rem; }
+        .admin-main { 
+            margin-left: 240px; 
+            padding: 1.5rem; 
+        }
+        .admin-brand { 
+            color: #fff; 
+            font-weight: 700; 
+            padding: 1.25rem; 
+        }
+        .top-navbar {
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        /* Dark mode */
+        [data-bs-theme="dark"] body {
+            background-color: #0f172a !important;
+            color: #e2e8f0;
+        }
     </style>
 </head>
 <body>
@@ -51,6 +86,14 @@
                 class="nav-link {{ request()->routeIs('admin.plans.*') ? 'active' : '' }}">
                  <i class="bi bi-credit-card me-2"></i> Plans
             </a>
+            <a href="{{ route('admin.activity.index') }}"
+                class="nav-link {{ request()->routeIs('admin.activity.*') ? 'active' : '' }}">
+                <i class="bi bi-journal-text me-2"></i> Activity logs
+            </a>
+            <a href="{{ route('admin.settings.edit') }}"
+                class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                <i class="fas fa-cog me-2"></i> Settings
+            </a>
             <hr class="border-secondary mx-3">
             <a href="{{ route('dashboard') }}" class="nav-link">
                 <i class="bi bi-arrow-left me-2"></i> Back to DukaFlow
@@ -59,6 +102,9 @@
     </aside>
 
     <main class="admin-main">
+        <!-- Header -->
+        @include('layouts.partials.header')
+
         @yield('content')
     </main>
 
@@ -73,8 +119,8 @@
                     icon: 'success',
                     title: @json(session('success')),
                     showConfirmButton: false,
-                    timer: 4000,
-                    timerProgressBar: true
+                    timer: 3000,
+                    timerProgressBar: false
                 });
             @endif
 
@@ -85,8 +131,8 @@
                     icon: 'error',
                     title: @json(session('error')),
                     showConfirmButton: false,
-                    timer: 4000,
-                    timerProgressBar: true
+                    timer: 3000,
+                    falserProgressBar: false
                 });
             @endif
         });
@@ -125,5 +171,7 @@
             });
         })();
     </script>
+
+    @stack('scripts')
 </body>
 </html>

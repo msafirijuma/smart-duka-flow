@@ -138,6 +138,15 @@ class CustomerController extends Controller
             $customer->decrement('balance', $request->amount);
         });
 
+        // activity log
+        ActivityLogger::log(
+            'customer.payment',
+            "Payment TZS " . number_format($amount, 0) . " from {$customer->name}",
+            $customer,
+            $shopId,
+            ['amount' => $amount]
+        );
+
         return redirect()->route('customers.show', $customer)
             ->with('success', 'Payment recorded successfully.');
     }

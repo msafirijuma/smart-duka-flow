@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('logo')->nullable();
             $table->boolean('is_active')->default(true);
             $table->foreignId('plan_id')->nullable()->constrained('plans')->nullOnDelete();
+            $table->timestamp('subscription_ends_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -86,7 +86,7 @@
                         <input type="number" step="0.01" name="discount" class="form-control" value="{{ old('discount', 0) }}" min="0">
                     </div>
 
-                    <div class="mb-3 p-3 bg-light rounded">
+                    <div class="mb-3 p-3 border rounded">
                         <div class="d-flex justify-content-between mb-1">
                             <span class="text-muted">Subtotal</span>
                             <span id="subtotalDisplay">TZS 0</span>
