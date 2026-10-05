@@ -49,7 +49,7 @@
 <body>
     {{ $slot }}
 
-    {{-- Full-page loader overlay --}}
+    <!-- Full-page loader overlay -->
     <div id="pageLoader" class="page-loader d-none">
         <div class="page-loader-inner">
             <div class="spinner-border text-primary" role="status" style="width: 2.5rem; height: 2.5rem;">

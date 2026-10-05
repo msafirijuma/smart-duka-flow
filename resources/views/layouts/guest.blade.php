@@ -85,7 +85,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- SweetAlert: asset yako AU CDN fallback -->
+    <!-- SweetAlert: asset or fallback -->
     <script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
     <script>
         // Fallback if not found
@@ -142,22 +142,22 @@
 
         // Hide / Show password
         document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.password-toggle').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                const id = this.getAttribute('data-target');
-                const input = document.getElementById(id);
-                if (!input) return;
+            document.querySelectorAll('.password-toggle').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const id = this.getAttribute('data-target');
+                    const input = document.getElementById(id);
+                    if (!input) return;
 
-                const icon = this.querySelector('i');
-                const isHidden = input.type === 'password';
+                    const icon = this.querySelector('i');
+                    const isHidden = input.type === 'password';
 
-                input.type = isHidden ? 'text' : 'password';
-                icon.classList.toggle('bi-eye', !isHidden);
-                icon.classList.toggle('bi-eye-slash', isHidden);
-                this.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+                    input.type = isHidden ? 'text' : 'password';
+                    icon.classList.toggle('bi-eye', !isHidden);
+                    icon.classList.toggle('bi-eye-slash', isHidden);
+                    this.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+                });
             });
         });
-    });
 
         // ===== Server-side flash / validation errors =====
         document.addEventListener('DOMContentLoaded', function () {

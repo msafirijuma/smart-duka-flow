@@ -80,6 +80,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/pos/checkout', [PosController::class, 'checkout'])->name('pos.checkout');
 
         Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
+        Route::get('/sales/create', [SaleController::class, 'create'])->name('sales.create');
         Route::get('/sales/{sale}/receipt', [SaleController::class, 'receipt'])->name('sales.receipt');
         Route::get('/sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
 

@@ -66,14 +66,21 @@
         #sidebar .nav-link {
             color: var(--sidebar-text);
             padding: 0.7rem 1.5rem;
+            font-weight: 500 !important;
+            padding: 0.6rem 1.2rem !important;
+            transition: all 0.2s ease !important;
             display: flex;
             align-items: center;
             gap: 0.75rem;
             font-size: 0.95rem;
-            transition: all 0.2s;
         }
 
-        #sidebar .nav-link:hover,
+        #sidebar .nav-link:hover {
+            background-color: #f1f5f9 !important; 
+            color: #0d6efd !important;            
+            padding-left: 1.5rem !important; 
+        }
+
         #sidebar .nav-link.active {
             background: rgba(59, 130, 246, 0.15);
             color: #fff;
@@ -188,6 +195,12 @@
 
         [data-bs-theme="dark"] .sidebar {
             
+        }
+
+        [data-bs-theme="dark"] #sidebar .nav-link:hover {
+            background-color: #0d6efd !important; 
+            color:  #f1f5f9 !important;            
+            padding-left: 1.5rem !important; 
         }
 
         [data-bs-theme="dark"] .card {

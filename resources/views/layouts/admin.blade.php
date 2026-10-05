@@ -21,30 +21,71 @@
         body { 
             background: #f1f5f9; 
         }
+
         .admin-sidebar {
-            width: 240px; 
-            min-height: 100vh; 
+            width: 260px; 
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
             background: #1e293b !important;
-            position: fixed; left: 0; top: 0;
+            overflow-y: auto;
         }
+
+        .admin-sidebar .section-title {
+            padding: 1.2rem 1.5rem 0.4rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+        }
+
         .admin-sidebar .nav-link {
-            color: #94a3b8; 
-            border-radius: 8px; 
-            margin: 2px 8px; 
-            padding: 8px 12px;
+            background-color: #1e293b; 
+            color: #e2e8f0 !important; 
+            font-weight: 500 !important;
+            padding: 0.6rem 1.2rem !important;
+            transition: all 0.2s ease !important;
+            display: flex !important;
+            align-items: center !important;
         }
-        .admin-sidebar .nav-link:hover, .admin-sidebar .nav-link.active {
-            background: #1e293b; color: #fff;
+
+        .admin-sidebar .nav-link:hover {
+            background-color: #1e293b; 
+            color: #fff;
+            color: #0d6efd !important;            
+            padding-left: 1.5rem !important; 
         }
+        
+        .admin-sidebar .nav-link.active {
+            background-color: #1e293b; 
+            color: #fff;
+            /* background-color: #f1f5f9 !important;  */
+            color: #0d6efd !important;            
+            padding-left: 1.5rem !important; 
+        }
+
         .admin-main { 
-            margin-left: 240px; 
-            padding: 1.5rem; 
+            flex: 1;
+            margin-left: 260px; /* same width to sidebar */
+            padding: 1.5rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        .admin-brand { 
-            color: #fff; 
-            font-weight: 700; 
-            padding: 1.25rem; 
+
+        .admin-brand {
+            padding: 1.25rem 1.5rem;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #fff;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
         }
+
         .top-navbar {
             background: #fff;
             border-bottom: 1px solid #e2e8f0;
@@ -67,36 +108,42 @@
 <body>
     <aside class="admin-sidebar">
         <div class="admin-brand">
-            <i class="bi bi-shop"></i> DukaFlow Admin
+            <i class="bi bi-shop"></i> DukaFlow
         </div>
+        
         <nav class="nav flex-column px-1">
             <a href="{{ route('admin.dashboard') }}"
                class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                <i class="bi bi-speedometer2 me-3"></i> Dashboard
             </a>
+
+            <div class="section-title">MANAGEMENT</div>
             <a href="{{ route('admin.shops.index') }}"
                class="nav-link {{ request()->routeIs('admin.shops.*') ? 'active' : '' }}">
-                <i class="bi bi-building me-2"></i> Shops
+                <i class="bi bi-building me-3"></i> Shops
             </a>
             <a href="{{ route('admin.users.index') }}"
                class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                <i class="bi bi-people me-2"></i> Users
+                <i class="bi bi-people me-3"></i> Users
             </a>
             <a href="{{ route('admin.plans.index') }}"
                 class="nav-link {{ request()->routeIs('admin.plans.*') ? 'active' : '' }}">
-                 <i class="bi bi-credit-card me-2"></i> Plans
+                 <i class="bi bi-credit-card me-3"></i> Plans
             </a>
+
+            <!-- System -->
+             <div class="section-title">SYSTEM</div>
             <a href="{{ route('admin.activity.index') }}"
                 class="nav-link {{ request()->routeIs('admin.activity.*') ? 'active' : '' }}">
-                <i class="bi bi-journal-text me-2"></i> Activity logs
+                <i class="bi bi-journal-text me-3"></i> Activity logs
             </a>
             <a href="{{ route('admin.settings.edit') }}"
                 class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
-                <i class="fas fa-cog me-2"></i> Settings
+                <i class="fas fa-cog me-3"></i> Settings
             </a>
             <hr class="border-secondary mx-3">
             <a href="{{ route('dashboard') }}" class="nav-link">
-                <i class="bi bi-arrow-left me-2"></i> Back to DukaFlow
+                <i class="bi bi-arrow-left me-3"></i> Back to DukaFlow
             </a>
         </nav>
     </aside>
