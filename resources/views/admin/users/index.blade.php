@@ -30,7 +30,7 @@
                     <td class="fw-semibold">{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->shops->count() }}</td>
-                    <td>{{ $user->created_at->format('d M Y') }}</td>
+                    <td>{{ $user->created_at->format('d M Y H:i') }}</td>
                     <td>
                         <a href="{{ route('admin.users.show', $user) }}" class="btn btn-sm btn-outline-primary">View</a>
                     </td>

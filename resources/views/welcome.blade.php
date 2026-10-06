@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DukaFlow - Smart POS & Inventory</title>
+    <title>{{ setting('platform_name', 'DukaFlow') }} - Smart POS & Inventory</title>
     <meta name="description" content="Manage sales, stock, expenses and profits easily. Built for Tanzanian businesses.">
 
     <script>
@@ -91,6 +91,7 @@
             transition: all 0.25s ease;
             height: 100%;
         }
+
         .feature-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 24px rgba(0,0,0,.08);
@@ -195,12 +196,29 @@
         }
 
         /* Language content */
-        .lang-sw { display: none; }
-        body.sw .lang-en { display: none; }
-        body.sw .lang-sw { display: block; }
-        body.sw .lang-sw-inline { display: inline; }
-        .lang-sw-inline { display: none; }
-        body.sw .lang-en-inline { display: none; }
+        .lang-sw, .lang-sw-inline { 
+            display: none; 
+        }
+
+        .lang-en, .lang-en-inline { 
+            display: inline-block !important; 
+        }
+
+        body.sw .lang-en { 
+            display: none !important; 
+        }
+
+        body.sw .lang-en-inline { 
+            display: none !important; 
+        }
+
+        body.sw .lang-sw { 
+            display: block; 
+        }
+
+        body.sw .lang-sw-inline { 
+            display: inline; 
+        }
 
         /* Dark mode for landing page */
         [data-bs-theme="dark"] body {
@@ -274,7 +292,7 @@
     <nav class="navbar navbar-expand-lg sticky-top py-2">
         <div class="container">
             <a class="navbar-brand mb-1" href="/">
-                <i class="bi bi-shop-window me-1"></i> DukaFlow
+                <i class="bi bi-shop-window me-1"></i> {{ setting('platform_name', 'DukaFlow') }}
             </a>
 
             <div class="d-flex align-items-center gap-2 pb-1">
@@ -314,11 +332,11 @@
                     </h1>
                     <p class="lead mb-4">
                         <span class="lang-en">
-                            DukaFlow helps you manage sales, stock, expenses and profits — 
+                            {{ setting('platform_name', 'DukaFlow') }} helps you manage sales, stock, expenses and profits — 
                             all from your phone or computer. Built for Tanzanian businesses.
                         </span>
                         <span class="lang-sw">
-                            DukaFlow inakusaidia kusimamia mauzo, ghala, matumizi na faida — 
+                            {{ setting('platform_name', 'DukaFlow') }} inakusaidia kusimamia mauzo, ghala, matumizi na faida — 
                             moja kwa moja kwenye simu au computer. Inaendana kabisa na biashara za Tanzania.
                         </span>
                     </p>
@@ -410,7 +428,7 @@
             </div>
 
             <div class="row g-4">
-                <!-- Feature cards remain mostly visual, short text in both languages -->
+                <!-- Feature cards -->
                 <div class="col-md-6 col-lg-4">
                     <div class="card feature-card shadow-sm">
                         <div class="card-body p-4">
@@ -527,21 +545,44 @@
                         <div class="card-body p-4 p-lg-5">
                             <h5 class="fw-bold text-center mb-3">Starter</h5>
                             <div class="text-center mb-1">
-                                <span class="display-5 fw-bold">Free</span>
+                                <span class="display-5 fw-bold lang-en">Free</span>
+                                <span class="display-5 fw-bold lang-sw">Bure</span>
                             </div>
                             <p class="text-center text-muted small mb-4">
-                                <span class="lang-en">Perfect to get started</span>
-                                <span class="lang-sw">Bora kwa kuanzia</span>
+                                <span class="lang-en">Perfect to get started (5-days trial)</span>
+                                <span class="lang-sw">Bora kwa kuanzia (Jaribu siku 5)</span>
                             </p>
 
                             <ul class="list-unstyled small mb-4">
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 1 Shop</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> POS & Sales</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Up to 50 Products</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Basic Reports</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 1 User</li>
-                                <li class="mb-2 text-muted"><i class="bi bi-x-circle me-2"></i> Data Export (Excel / PDF)</li>
-                                <li class="mb-2 text-muted"><i class="bi bi-x-circle me-2"></i> Multi-shop</li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">1 Shop</span> 
+                                    <span class="lang-sw lang-sw-inline">Duka 1 tu</span> 
+                                </li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">POS & Selling</span> 
+                                    <span class="lang-sw lang-sw-inline">Mauzo</span> 
+                                </li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">Up to 50 Products</span> 
+                                    <span class="lang-sw lang-sw-inline">Mpaka bidhaa 50</span> 
+                                </li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">Basic Reports</span> 
+                                    <span class="lang-sw lang-sw-inline">Ripoti za msingi</span> 
+                                </li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">1 user</span> 
+                                    <span class="lang-sw lang-sw-inline">Mtumiaji mmoja tu</span> 
+                                </li>
+                                <li class=" text-muted"><i class="bi bi-x-circle text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">Data Export (Excel / PDF)</span> 
+                                    <span class="lang-sw lang-sw-inline">Pakua data (Excel / PDF)</span> 
+                                </li>
+                                <li class="mb-2 text-muted"><i class="bi bi-x-circle text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">Maduka mengi</span> 
+                                    <span class="lang-sw lang-sw-inline">Multi-shop</span> 
+                                </li>
                             </ul>
 
                             <a href="{{ route('register') }}" class="btn btn-outline-primary w-100 fw-semibold">
@@ -558,7 +599,8 @@
                         style="border-radius: 1.25rem; border: 2px solid #2563eb !important;">
                         
                         <div class="position-absolute top-0 start-50 translate-middle">
-                            <span class="badge bg-primary px-3 py-2 rounded-pill">Most Popular</span>
+                            <span class="badge bg-primary px-3 py-2 rounded-pill lang-en">Most Popular</span>
+                            <span class="badge bg-primary px-3 py-2 rounded-pill lang-sw">Mashuhuri Zaidi</span>
                         </div>
 
                         <div class="card-body p-4 p-lg-5">
@@ -566,16 +608,39 @@
                             <div class="text-center mb-1">
                                 <span class="display-5 fw-bold">TZS 19,999</span>
                             </div>
-                            <p class="text-center text-muted small mb-4">per month</p>
+                            <p class="text-center text-muted small mb-4 lang-en">per month</p>
+                            <p class="text-center text-muted small mb-4 lang-sw">kwa mwezi</p>
 
                             <ul class="list-unstyled small mb-4">
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Up to 3 Shops</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Unlimited Products</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Full Reports (Daily–Yearly)</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Customer Credit </li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Low Stock Alerts</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Up to 5 Users</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Expense Tracking</li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">Up to 3 Shops</span> 
+                                    <span class="lang-sw lang-sw-inline">Mpaka maduka 3</span> 
+                                </li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline"> Unlimited Products</span> 
+                                    <span class="lang-sw lang-sw-inline">Hakuna ukomo wa bidhaa</span> 
+                                </li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">Full Reports (Daily–Yearly)</span> 
+                                    <span class="lang-sw lang-sw-inline">Ripoti zote (Siku-Mwaka)</span> 
+                                </li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">Customer Credit</span> 
+                                    <span class="lang-sw lang-sw-inline">Wateja wenye mikopo</span> 
+                                </li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline"> Low Stock Alerts</span> 
+                                    <span class="lang-sw lang-sw-inline">Tahadhari kwa bdhaa zinazopungua</span> 
+                                </li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">Data Export (Excel / PDF)</span> 
+                                    <span class="lang-sw lang-sw-inline">Pakua data (Excel / PDF)</span> 
+                                </li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">Up to 5 Users</span> 
+                                    <span class="lang-sw lang-sw-inline">Mpaka watumiaji watano</span> 
+                                </li>
                             </ul>
 
                             <a href="{{ route('register') }}" class="btn btn-primary w-100 fw-semibold">
@@ -594,16 +659,39 @@
                             <div class="text-center mb-1">
                                 <span class="display-5 fw-bold">TZS 39,999</span>
                             </div>
-                            <p class="text-center text-muted small mb-4">per month</p>
+                            <p class="text-center text-muted small mb-4 lang-en">per month</p>
+                            <p class="text-center text-muted small mb-4 lang-sw">kwa mwezi</p>
 
                             <ul class="list-unstyled small mb-4">
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Unlimited Shops</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Everything in Business</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Advanced Profit Reports</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Unlimited Users</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Data Export (Excel / PDF)</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Priority Support</li>
-                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Early access to new features</li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">Unlimited Shops</span> 
+                                    <span class="lang-sw lang-sw-inline">Hakuna ukomo wa maduka</span> 
+                                </li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline"> Unlimited Products</span> 
+                                    <span class="lang-sw lang-sw-inline">Hakuna ukomo wa bidhaa</span> 
+                                </li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">Full Reports (Daily–Yearly)</span> 
+                                    <span class="lang-sw lang-sw-inline">Ripoti zote (Siku-Mwaka)</span> 
+                                </li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">Customer Credit</span> 
+                                    <span class="lang-sw lang-sw-inline">Wateja wenye mikopo</span> 
+                                </li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline"> Low Stock Alerts</span> 
+                                    <span class="lang-sw lang-sw-inline">Tahadhari kwa bdhaa zinazopungua</span> 
+                                </li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">24/7 Support & Training</span> 
+                                    <span class="lang-sw lang-sw-inline">Huduma 24/7 & Mafunzo</span> 
+                                </li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> 
+                                    <span class="lang-en lang-en-inline">Unlimited users</span> 
+                                    <span class="lang-sw lang-sw-inline">Hakuna ukomo wa watumiaji</span> 
+                                </li>
                             </ul>
 
                             <a href="{{ route('register') }}" class="btn btn-outline-primary w-100 fw-semibold">
@@ -622,8 +710,14 @@
     <section id="team" class="py-5">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="fw-bold text-white mb-2">Meet Our Team</h2>
-                <p class="text-white">The people behind DukaFlow</p>
+                <h2 class="fw-bold text-white mb-2">
+                    <span class="lang-en">Meet Our Team</span>
+                    <span class="lang-sw">Jua Timu Yetu</span>
+                </h2>
+                <p class="text-white">
+                    <span class="lang-en">The people behind {{ setting('platform_name', 'DukaFlow') }}</span>
+                    <span class="lang-sw">Watu nyuma ya {{ setting('platform_name', 'DukaFlow') }}</span>
+                </p>
             </div>
 
             <div class="row g-4 justify-content-center">
@@ -638,13 +732,18 @@
                                     style="width: 120px; height: 120px; object-fit: cover; border: 3px solid rgba(245, 158, 11, 0.3);">
                             </div>
                             <h5 class="fw-bold mb-1">Msafiri Juma</h5>
-                            <p class="small mb-2">Founder | IT Support</p>
+                            <p class="small mb-2">
+                                <span class="lang-en">Founder | IT Support</span>
+                                <span class="lang-sw">Mwanzilishi | Mhudumu IT</span>
+                            </p>
                             <p class="text-muted small mb-0">
-                                Ensures the platform runs smoothly and provides technical support to our users.
+                               <span class="lang-en">Ensures the platform runs smoothly and provides technical support to our users.</span> 
+                               <span class="lang-sw">Kuhakikisha mradi unaendelea vizuri na kutoa huduma za kiufundi kwa watumiaji wetu.</span> 
                             </p>
                             <div class="d-flex justify-content-center gap-3 mt-3">
-                                <a href="tel:+255687328084" class="btn btn-outline-primary btn-sm mt-3">
-                                    <i class="bi bi-phone me-2"></i> Call
+                                <a href="tel:+255687328084" class="btn btn-outline-primary btn-sm mt-3"><i class="bi bi-phone me-2"></i> 
+                                    <span class="lang-en-inline">Call</span>
+                                    <span class="lang-sw-inline">Piga</span>
                                 </a>
                                 <a href="https://wa.me/255749696868" target="_blank" class="btn btn-primary btn-sm mt-3">
                                     <i class="fab fa-whatsapp me-2"></i> WhatsApp
@@ -677,13 +776,19 @@
                                     style="width: 120px; height: 120px; object-fit: cover; border: 3px solid rgba(245, 158, 11, 0.3);">
                             </div>
                             <h5 class="fw-bold mb-1">Noel Faraja</h5>
-                            <p class="small mb-2">Co. Founder | IT Support</p>
+                            <p class="small mb-2">
+                                <span class="lang-en">Co. Founder | IT Support</span>
+                                <span class="lang-sw">Mwanzilishi Mwenza | Mhudumu IT</span>
+                            </p>
                             <p class="text-muted small mb-0">
-                                Ensuring platform run smoothly and safety.
+                               <span class="lang-en">Ensures the platform security, reliability and provides technical support to our users.</span> 
+                               <span class="lang-sw">Kuhakikisha ulinzi, upatikanaji wa mradi na kutoa huduma za kiufundi kwa watumiaji wetu.</span> 
                             </p>
                             <div class="d-flex justify-content-center gap-3 mt-3">
                                 <a href="tel:+255712483688" class="btn btn-outline-primary btn-sm mt-3">
-                                    <i class="bi bi-phone me-2"></i> Call
+                                    <i class="bi bi-phone me-2"></i>
+                                    <span class="lang-en-inline">Call</span>
+                                    <span class="lang-sw-inline">Piga</span>
                                 </a>
                                 <a href="https://wa.me/255712483688" target="_blank" class="btn btn-primary btn-sm mt-3">
                                     <i class="fab fa-whatsapp me-2"></i> WhatsApp
@@ -719,7 +824,7 @@
                 </p>
                 <a href="{{ route('register') }}" class="btn btn-light btn-lg fw-semibold">
                     <span class="lang-en">Create Free Account</span>
-                    <span class="lang-sw lang-sw-inline">Fungua Account Bure</span>
+                    <span class="lang-sw-inline">Fungua Account Bure</span>
                     <i class="bi bi-arrow-right ms-1"></i>
                 </a>
             </div>
@@ -732,7 +837,7 @@
             <div class="row align-items-center">
                 <div class="col-md-6 mb-3 mb-md-0">
                     <div class="fw-bold mb-1">
-                        <i class="bi bi-shop-window me-1 text-primary"></i> DukaFlow
+                        <i class="bi bi-shop-window me-1 text-primary"></i> {{ setting('platform_name', 'DukaFlow') }}
                     </div>
                     <div class="text-muted small">
                         <span class="lang-en">Smart POS & Inventory for Tanzanian businesses.</span>
@@ -742,14 +847,14 @@
                 <div class="col-md-6 text-md-end">
                     <a href="{{ route('login') }}" class="text-decoration-none text-muted me-3">Login</a>
                     <a href="{{ route('register') }}" class="text-decoration-none text-muted me-3">Register</a>
-                    <span class="text-muted small">© {{ date('Y') }} DukaFlow</span>
+                    <span class="text-muted small">© {{ date('Y') }} {{ setting('platform_name', 'DukaFlow') }}</span>
                 </div>
             </div>
         </div>
     </footer>
 
     <!-- WhatsApp Floating Button -->
-    <a href="https://wa.me/255687328084?text=Habari%2C%20ningependa%20kujua%20zaidi%20kuhusu%20DukaFlow"
+    <a href="https://wa.me/255687328084?text=Habari%2C%20ningependa%20kujua%20zaidi%20kuhusu%{{ setting('platform_name', 'DukaFlow') }}"
        class="whatsapp-float" target="_blank" title="Chat on WhatsApp">
         <i class="bi bi-whatsapp"></i>
     </a>

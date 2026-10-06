@@ -1,11 +1,11 @@
 <div class="top-navbar">
     <div class="d-flex align-items-center gap-3">
-        {{-- Mobile toggle --}}
+        <!-- Mobile toggle -->
         <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle">
             <i class="bi bi-list"></i>
         </button>
 
-        {{-- Current Shop --}}
+        <!-- Current Shop -->
         @php
             $currentShop = auth()->user()?->currentShop();
         @endphp
@@ -34,14 +34,6 @@
             </a>
         @endif
 
-        <!-- Quick POS button -->
-        @if(!auth()->user()->isAdmin())
-            <a href="{{ route('pos.index') }}"
-            class="btn btn-primary btn-sm d-none d-md-inline-flex align-items-center gap-1">
-                <i class="bi bi-cart-plus"></i> New Sale
-            </a>
-        @endif
-
         <button type="button"
                 class="btn btn-sm btn-outline-secondary me-2"
                 id="themeToggle"
@@ -50,19 +42,9 @@
             <i class="bi bi-moon-stars" id="themeIcon"></i>
         </button>
 
-        <!-- Admin panel link — Super Admin only -->
-        @if(auth()->check() && auth()->user()->isAdmin())
-            <a href="{{ route('admin.dashboard') }}"
-            class="btn btn-sm btn-dark me-2"
-            title="Platform Admin">
-                <i class="bi bi-shield-lock"></i>
-                <span class="d-none d-md-inline">Admin</span>
-            </a>
-        @endif
-
         <!-- User Dropdown -->
         <div class="dropdown">
-            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark"
                 id="userDropdown"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"

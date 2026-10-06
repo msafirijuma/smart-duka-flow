@@ -9,8 +9,14 @@
     </div>
     
     <div class="brand">
-        <i class="bi bi-shop-window"></i>
-        <span>DukaFlow</span>
+        @if(setting('platform_logo'))
+            <img src="{{ asset('storage/' . setting('platform_logo')) }}"
+                alt="{{ setting('platform_name', 'DukaFlow') }}"
+                class="brand-logo">
+                {{ setting('platform_name', 'DukaFlow') }}
+        @else
+            <i class="bi bi-shop"></i> {{ setting('platform_name', 'DukaFlow') }}
+        @endif
     </div>
 
     <div class="py-2">

@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\OfficeSetting;
+use App\Models\PlatformSetting;
 
 if (!function_exists('setting')) {
     function setting(string $key, $default = null)
     {
-        return OfficeSetting::get($key, $default);
+        return PlatformSetting::get($key, $default);
     }
 }

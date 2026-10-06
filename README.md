@@ -1,22 +1,25 @@
-# HRM System (Laravel)
+# DukaFlow System
 
-Human Resource Management System built with Laravel, Bootstrap, and Spatie Permissions.
+DukaFlow System built with Laravel, Bootstrap, and Spatie Permissions.
 
 ## Features
 
-- Role-based access: Super Admin, HR, Manager, Employee
-- Employee & Department management
-- Leave types, requests, approval workflow
-- Payroll (single + bulk) with Tanzania-style deductions
-- Attendance (mark, team, HR overview)
-- Performance reviews
-- Documents upload per employee
-- Company announcements (with unread tracking)
-- Public holidays
-- Activity logs / audit trail
+- Role-based access: Owner, Manager, Cashier, Admin
+- Categories & Products management
+- POS, Selling point workflow
+- Customers and Suppliers Management
+- Settings (setup a name, address, phone and email)
+- Dark mode feature 
+- Stock Management --- restock, low stock alert
+- Supports multi-shops --> switch between your registered shops
+- Language switcher (English and Swahili version)
+- Add your staff (Managers and Cashiers)
+- Purchase and restock product on the go, no time to waste
+- Sell instant ---> stock drops || Purchase insant ----> stock go higher
 - Notifications (database + email ready)
-- Scheduled notifications (leave starting soon, contract expiry, birthday, holidays, low leave balance)
-- Dashboards & reports per role
+- Reports ---> sales, purchases, expenses and profits (both in pdf and an excel document)
+- Export and download your data (backup) 
+- Dashboards per role
 
 ## Requirements
 
@@ -26,7 +29,7 @@ Human Resource Management System built with Laravel, Bootstrap, and Spatie Permi
 - Node (optional, for assets)
 
 ## Installation
-```bash
+```bash \ cmd 
 git clone <repo-url>
 cd hrm-laravel
 composer install
@@ -34,13 +37,13 @@ cp .env.example .env
 php artisan key:generate
 
 ## Configure .env
-APP_NAME="HRM System"
+APP_NAME="DukaFlow"
 APP_URL=http://127.0.0.1:8000
 
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=hrm
+DB_DATABASE=dukaflow_db
 DB_USERNAME=root
 DB_PASSWORD=
 
@@ -53,26 +56,11 @@ php artisan storage:link
 php artisan serve
 # Open: http://127.0.0.1:8000
 
-##  Default Login (from seeders)
-Role: Super Admin
-Email: admin@company.com
-Password: password
+##  Create your account 
+- Create / register an account with name, valid email, password and lastly confirm password, then you are ready to go.
 
-Role: HR
-Email: ahmed@company.com
-Password: password
-
-Role: Manager
-Email: manager@company.com
-Password: password
-
-Role: Employee
-Email: ashura@company.com
-Password: password
-
--- For more sample data for all staff, you can navigate to database -> seeders (sample-only)
--- You can change these passwords after first login.
-
+##  Login with your credentials
+- Enter your valid email address and correct to log in to your account ---- password are secured stored, do not share with anyone
 
 ## Tech Stack
 Laravel 11+

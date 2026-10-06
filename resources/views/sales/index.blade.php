@@ -15,8 +15,66 @@
     </a>
 </div>
 
+<!-- Search -->
+<form method="GET" action="{{ route('sales.index') }}" id="salesFilterForm" class="card border-0 shadow-sm mb-3">
+    <div class="card-body py-3">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-11">
+                <label class="form-label small mb-1">Search</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text"
+                           name="q"
+                           id="salesSearch"
+                           value="{{ request('q', $q ?? '') }}"
+                           class="form-control"
+                           placeholder="Invoice, product, customer, amount, payment…"
+                           autocomplete="off"
+                           autofocus>
+                    @if(request('q'))
+                        <button type="button" class="btn btn-outline-secondary" id="clearSearch" title="Clear">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    @endif
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label small mb-1">From</label>
+                <input type="date" name="from" id="salesFrom" value="{{ request('from') }}" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small mb-1">To</label>
+                <input type="date" name="to" id="salesTo" value="{{ request('to') }}" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small mb-1">Payment</label>
+                <select name="payment_method" id="salesPayment" class="form-select">
+                    <option value="">All</option>
+                    @foreach(['cash','mpesa','bank','credit','mixed'] as $m)
+                        <option value="{{ $m }}" @selected(request('payment_method') === $m)>
+                            {{ strtoupper($m) }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100" title="Search">
+                    <i class="bi bi-funnel"></i>
+                </button>
+            </div>
+        </div>
+
+        @if(request()->hasAny(['q','from','to','payment_method']))
+            <div class="mt-2">
+                <a href="{{ route('sales.index') }}" class="btn btn-sm btn-outline-secondary">Clear all</a>
+            </div>
+        @endif
+    </div>
+</form>
+
 <!-- Filters -->
-<div class="card border-0 shadow-sm mb-3">
+<!-- <div class="card border-0 shadow-sm mb-3">
     <div class="card-body py-3">
         <form method="GET" class="row g-2 align-items-end">
             <div class="col-md-3">
@@ -43,7 +101,7 @@
             </div>
         </form>
     </div>
-</div>
+</div> -->
 
 <!-- Sales Table -->
 <div class="card border-0 shadow-sm">
@@ -58,8 +116,8 @@
                         <th>Customer</th>
                         <th>Total</th>
                         <th>Payment</th>
-                        <th>Date</th>
-                        <th width="90">Action</th>
+                        <th style="width: 120px; min-width: 120px">Date</th>
+                        <th style="width: 90px; min-width: 90px">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -101,3 +159,59 @@
     @endif
 </div>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    const form   = document.getElementById('salesFilterForm');
+    const search = document.getElementById('salesSearch');
+    const from   = document.getElementById('salesFrom');
+    const to     = document.getElementById('salesTo');
+    const pay    = document.getElementById('salesPayment');
+    const clear  = document.getElementById('clearSearch');
+
+    if (!form || !search) return;
+
+    let timer = null;
+    const DELAY = 1000; // ms — change if you want faster/slower
+
+    function submitForm() {
+        form.submit();
+    }
+
+    // Type → wait → submit
+    search.addEventListener('input', function () {
+        clearTimeout(timer);
+        timer = setTimeout(submitForm, DELAY);
+    });
+
+    // Enter → submit immediately (no wait)
+    search.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            clearTimeout(timer);
+            submitForm();
+        }
+    });
+
+    // Date / payment change → submit now
+    [from, to, pay].forEach(function (el) {
+        if (!el) return;
+        el.addEventListener('change', function () {
+            clearTimeout(timer);
+            submitForm();
+        });
+    });
+
+    // X button → clear only q and submit
+    if (clear) {
+        clear.addEventListener('click', function () {
+            search.value = '';
+            clearTimeout(timer);
+            submitForm();
+        });
+    }
+})();
+</script>
+@endpush
+
