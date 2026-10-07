@@ -119,8 +119,8 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             // Delete old
-            if ($product->image && \Storage::disk('public')->exists($product->image)) {
-                \Storage::disk('public')->delete($product->image);
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
             }
             $data['image'] = $request->file('image')->store('products', 'public');
         }
@@ -145,7 +145,7 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $shopId = session('current_shop_id');
-        
+
         $this->authorizeShop($product);
 
         if ($product->image && Storage::disk('public')->exists($product->image)) {

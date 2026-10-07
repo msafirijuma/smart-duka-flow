@@ -103,7 +103,7 @@
                         <th>Stock</th>
                         <th>Threshold</th>
                         <th>Status</th>
-                        <th style="width; 100px; min-width: 100px">Action</th>
+                        <th style="width: 100px; min-width: 100px">Action</th>
                     </tr>
                 </thead>
                 <tbody>
