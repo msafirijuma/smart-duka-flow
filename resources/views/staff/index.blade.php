@@ -9,7 +9,7 @@
     </a>
 </div>
 
-<div class="card border-0 shadow-sm">
+<div class="card border-1 shadow-sm">
     <div class="card-body p-3">
         <!-- Search Bar Header -->
         <div class="card-header bg-transparent border-0 py-3">
@@ -21,7 +21,7 @@
                         </span>
                         <input type="text" 
                             id="staffSearchInput" 
-                            class="form-control bg-dark text-white border-secondary ps-5 pe-5" 
+                            class="form-control border-secondary ps-5 pe-5" 
                             placeholder="Search staff by name or phone..." 
                             autocomplete="off">
                             
