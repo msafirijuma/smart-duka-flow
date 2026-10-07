@@ -31,7 +31,7 @@ DukaFlow System built with Laravel, Bootstrap, and Spatie Permissions.
 ## Installation
 ```bash \ cmd 
 git clone <repo-url>
-cd hrm-laravel
+cd duka-flow
 composer install
 cp .env.example .env
 php artisan key:generate
