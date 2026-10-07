@@ -22,11 +22,11 @@
         <div class="row g-2 align-items-end">
             <div class="col-md-3">
                 <label class="form-label small mb-1">From</label>
-                <input type="date" name="from" class="form-control form-control-sm" value="{{ $from }}">
+                <input type="date" name="from" class="form-control form-control-sm" value="{{ request('from') }}">
             </div>
             <div class="col-md-3">
                 <label class="form-label small mb-1">To</label>
-                <input type="date" name="to" class="form-control form-control-sm" value="{{ $to }}">
+                <input type="date" name="to" class="form-control form-control-sm" value="{{ request('to') }}">
             </div>
             <div class="col-md-3">
                 <label class="form-label small mb-1">Payment</label>
@@ -38,7 +38,8 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <button class="btn btn-sm btn-primary">Filter</button>
+                <button class="btn btn-sm btn-outline-primary me-1">Filter</button>
+                <a href="{{ route('reports.sales') }}" class="btn btn-sm btn-outline-secondary">Reset</a>
             </div>
         </div>
     </div>
@@ -79,10 +80,36 @@
     </div>
 </div>
 
-<div class="card border-0 shadow-sm">
+<div class="card border-1 shadow-sm">
     <div class="card-body p-3">
         <div class="table-responsive">
-            <table class="table table-striped table-hover mb-0">
+            <!-- Search Bar Header -->
+            <div class="card-header bg-transparent border-0 py-3">
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <div class="position-relative">
+                            <span class="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" 
+                                id="saleSearchInput" 
+                                class="form-control border-secondary ps-5 pe-5" 
+                                placeholder="Search sale by title or category..." 
+                                autocomplete="off">
+
+                            <!-- Clear (X) Button (Hidden by default) -->
+                            <button type="button" 
+                                    id="clearSearchBtn" 
+                                    class="btn-close btn-close-white position-absolute top-50 end-0 translate-middle-y me-3 d-none" 
+                                    aria-label="Clear search">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- table -->
+            <table class="table table-striped table-hover table-sm mb-0">
                 <thead class="table-light">
                     <tr>
                         <th>#</th>
@@ -109,7 +136,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">No sales in this period.</td>
+                            <td colspan="7" class="text-center text-muted py-4">No sales found.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -121,3 +148,54 @@
     @endif
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('saleSearchInput');
+    const clearBtn = document.getElementById('clearSearchBtn');
+
+    if (searchInput) {
+        // filter rows method
+        function filterSales() {
+            const filter = searchInput.value.toLowerCase().trim();
+            const rows = document.querySelectorAll('tbody tr');
+
+            // show/hide (X) icon
+            if (filter.length > 0) {
+                clearBtn.classList.remove('d-none');
+            } else {
+                clearBtn.classList.add('d-none');
+            }
+
+            // Filter table rows
+            rows.forEach(row => {
+                if (row.id === 'noDataRow') return;
+
+                const text = row.textContent.toLowerCase();
+                if (text.includes(filter)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // keyup handler
+        searchInput.addEventListener('keyup', filterSales);
+
+        // clear search when X btn is clicked
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function () {
+                searchInput.value = '';
+                filterSales(); // Re-filter
+                searchInput.focus(); // return cursor to input
+            });
+        }
+    }
+});
+</script>
+@endpush
+
+
+

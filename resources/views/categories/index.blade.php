@@ -9,17 +9,43 @@
     </a>
 </div>
 
-<div class="card border-0 shadow-sm">
+<div class="card border-1 shadow-sm">
     <div class="card-body p-3">
+        <!-- Search Bar Header -->
+        <div class="card-header bg-transparent border-0 py-3">
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <div class="position-relative">
+                        <span class="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" 
+                            id="categoriesSearchInput" 
+                            class="form-control border-secondary ps-5 pe-5" 
+                            placeholder="Search category by name, status or description..." 
+                            autocomplete="off">
+                            
+                        <!-- Clear (X) Button (Hidden by default) -->
+                        <button type="button" 
+                                id="clearSearchBtn" 
+                                class="btn-close btn-close-white position-absolute top-50 end-0 translate-middle-y me-3 d-none" 
+                                aria-label="Clear search">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- table -->
         <div class="table-responsive">
-            <table class="table table-striped table-hover mb-0">
+            <table class="table table-striped table-hover table-sm mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Status</th>
-                        <th style="width: 140px; min-width: 140px">Actions</th>
+                        <th style="width: 30px; min-width: 30px">#</th>
+                        <th style="width: 80px; min-width: 80px">Name</th>
+                        <th style="width: 150px; min-width: 150px">Description</th>
+                        <th style="width: 80px; min-width: 80px">Status</th>
+                        <th style="width: 80px; min-width: 80px">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,7 +75,7 @@
                     @empty
                         <tr>
                             <td colspan="5" class="text-center text-muted py-4">
-                                No categories yet. <a class="text-decoration-none" href="{{ route('categories.create') }}">Add your first category</a>
+                                No categories found. <a class="text-decoration-none" href="{{ route('categories.create') }}">Add your first category</a>
                             </td>
                         </tr>
                     @endforelse
@@ -59,3 +85,52 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('categoriesSearchInput');
+    const clearBtn = document.getElementById('clearSearchBtn');
+
+    if (searchInput) {
+        // filter rows method
+        function filterCategories() {
+            const filter = searchInput.value.toLowerCase().trim();
+            const rows = document.querySelectorAll('tbody tr');
+
+            // show/hide (X) icon
+            if (filter.length > 0) {
+                clearBtn.classList.remove('d-none');
+            } else {
+                clearBtn.classList.add('d-none');
+            }
+
+            // Filter table rows
+            rows.forEach(row => {
+                if (row.id === 'noDataRow') return;
+
+                const text = row.textContent.toLowerCase();
+                if (text.includes(filter)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // keyup handler
+        searchInput.addEventListener('keyup', filterCategories);
+
+        // clear search when X btn is clicked
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function () {
+                searchInput.value = '';
+                filterCategories(); // Re-filter
+                searchInput.focus(); // return cursor to input
+            });
+        }
+    }
+});
+</script>
+@endpush
+

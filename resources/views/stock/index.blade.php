@@ -24,7 +24,7 @@
             <div class="card border-0 shadow-sm h-100 {{ $filter === 'all' ? 'border-primary border-2' : '' }}">
                 <div class="card-body">
                     <div class="text-muted small">All products</div>
-                    <div class="fs-4 fw-bold text-dark">{{ $totalProducts }}</div>
+                    <div class="fs-4 fw-bold">{{ $totalProducts }}</div>
                 </div>
             </div>
         </a>
@@ -94,7 +94,7 @@
 <div class="card border-0 shadow-sm">
     <div class="card-body p-3">
         <div class="table-responsive">
-            <table class="table table-striped table-hover mb-0 align-middle">
+            <table class="table table-striped table-hover table-sm mb-0 align-middle">
                 <thead class="table-light">
                     <tr>
                         <th>#</th>

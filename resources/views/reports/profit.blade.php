@@ -29,7 +29,8 @@
                 <input type="date" name="to" class="form-control form-control-sm" value="{{ $to }}">
             </div>
             <div class="col-md-3">
-                <button class="btn btn-sm btn-primary">Filter</button>
+                <button class="btn btn-sm btn-outline-primary me-1">Filter</button>
+                <a href="{{ route('reports.profit') }}" class="btn btn-sm btn-outline-secondary">Reset</a>
             </div>
         </div>
     </div>

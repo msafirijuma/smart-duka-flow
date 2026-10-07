@@ -40,7 +40,7 @@
                     <td>{{ strtoupper($sale->payment_method) }}</td>
                 </tr>
             @empty
-                <tr><td colspan="6">No sales in this period</td></tr>
+                <tr><td colspan="6">No sales found.</td></tr>
             @endforelse
         </tbody>
     </table>

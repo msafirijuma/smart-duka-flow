@@ -133,7 +133,7 @@
         .top-navbar {
             background: #fff;
             border-bottom: 1px solid #e2e8f0;
-            padding: 0.75rem 1.5rem;
+            padding: 1.2rem 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -228,7 +228,7 @@
         }
 
         [data-bs-theme="dark"] .app-footer {
-            background-color: #1e293b;
+            background-color: #172943 !important;
             border-color: #334155;
         }
 

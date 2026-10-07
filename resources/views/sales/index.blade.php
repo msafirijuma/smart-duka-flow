@@ -15,66 +15,8 @@
     </a>
 </div>
 
-<!-- Search -->
-<form method="GET" action="{{ route('sales.index') }}" id="salesFilterForm" class="card border-0 shadow-sm mb-3">
-    <div class="card-body py-3">
-        <div class="row g-2 align-items-end">
-            <div class="col-md-11">
-                <label class="form-label small mb-1">Search</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text"
-                           name="q"
-                           id="salesSearch"
-                           value="{{ request('q', $q ?? '') }}"
-                           class="form-control"
-                           placeholder="Invoice, product, customer, amount, payment…"
-                           autocomplete="off"
-                           autofocus>
-                    @if(request('q'))
-                        <button type="button" class="btn btn-outline-secondary" id="clearSearch" title="Clear">
-                            <i class="bi bi-x-lg"></i>
-                        </button>
-                    @endif
-                </div>
-            </div>
-
-            <div class="col-md-2">
-                <label class="form-label small mb-1">From</label>
-                <input type="date" name="from" id="salesFrom" value="{{ request('from') }}" class="form-control">
-            </div>
-            <div class="col-md-2">
-                <label class="form-label small mb-1">To</label>
-                <input type="date" name="to" id="salesTo" value="{{ request('to') }}" class="form-control">
-            </div>
-            <div class="col-md-2">
-                <label class="form-label small mb-1">Payment</label>
-                <select name="payment_method" id="salesPayment" class="form-select">
-                    <option value="">All</option>
-                    @foreach(['cash','mpesa','bank','credit','mixed'] as $m)
-                        <option value="{{ $m }}" @selected(request('payment_method') === $m)>
-                            {{ strtoupper($m) }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-1">
-                <button type="submit" class="btn btn-primary w-100" title="Search">
-                    <i class="bi bi-funnel"></i>
-                </button>
-            </div>
-        </div>
-
-        @if(request()->hasAny(['q','from','to','payment_method']))
-            <div class="mt-2">
-                <a href="{{ route('sales.index') }}" class="btn btn-sm btn-outline-secondary">Clear all</a>
-            </div>
-        @endif
-    </div>
-</form>
-
 <!-- Filters -->
-<!-- <div class="card border-0 shadow-sm mb-3">
+<div class="card border-0 shadow-sm mb-3">
     <div class="card-body py-3">
         <form method="GET" class="row g-2 align-items-end">
             <div class="col-md-3">
@@ -101,13 +43,39 @@
             </div>
         </form>
     </div>
-</div> -->
+</div>
 
 <!-- Sales Table -->
-<div class="card border-0 shadow-sm">
+<div class="card border-1 shadow-sm">
     <div class="card-body p-3">
+        <!-- Search Bar Header -->
+        <div class="card-header bg-transparent border-0 py-3">
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <div class="position-relative">
+                        <span class="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" 
+                            id="saleSearchInput" 
+                            class="form-control border-secondary ps-5 pe-5" 
+                            placeholder="Search sale by name or phone..." 
+                            autocomplete="off">
+                            
+                        <!-- Clear (X) Button (Hidden by default) -->
+                        <button type="button" 
+                                id="clearSearchBtn" 
+                                class="btn-close btn-close-white position-absolute top-50 end-0 translate-middle-y me-3 d-none" 
+                                aria-label="Clear search">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- table -->
         <div class="table-responsive">
-            <table class="table table-striped table-hover mb-0 align-middle">
+            <table class="table table-striped table-hover table-sm mb-0 align-middle">
                 <thead class="table-light">
                     <tr>
                         <th>#</th>
@@ -162,56 +130,48 @@
 
 @push('scripts')
 <script>
-(function () {
-    const form   = document.getElementById('salesFilterForm');
-    const search = document.getElementById('salesSearch');
-    const from   = document.getElementById('salesFrom');
-    const to     = document.getElementById('salesTo');
-    const pay    = document.getElementById('salesPayment');
-    const clear  = document.getElementById('clearSearch');
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('saleSearchInput');
+    const clearBtn = document.getElementById('clearSearchBtn');
 
-    if (!form || !search) return;
+    if (searchInput) {
+        // filter rows method
+        function filterSales() {
+            const filter = searchInput.value.toLowerCase().trim();
+            const rows = document.querySelectorAll('tbody tr');
 
-    let timer = null;
-    const DELAY = 1000; // ms — change if you want faster/slower
+            // show/hide (X) icon
+            if (filter.length > 0) {
+                clearBtn.classList.remove('d-none');
+            } else {
+                clearBtn.classList.add('d-none');
+            }
 
-    function submitForm() {
-        form.submit();
-    }
+            // Filter table rows
+            rows.forEach(row => {
+                if (row.id === 'noDataRow') return;
 
-    // Type → wait → submit
-    search.addEventListener('input', function () {
-        clearTimeout(timer);
-        timer = setTimeout(submitForm, DELAY);
-    });
-
-    // Enter → submit immediately (no wait)
-    search.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            clearTimeout(timer);
-            submitForm();
+                const text = row.textContent.toLowerCase();
+                if (text.includes(filter)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         }
-    });
 
-    // Date / payment change → submit now
-    [from, to, pay].forEach(function (el) {
-        if (!el) return;
-        el.addEventListener('change', function () {
-            clearTimeout(timer);
-            submitForm();
-        });
-    });
+        // keyup handler
+        searchInput.addEventListener('keyup', filterSales);
 
-    // X button → clear only q and submit
-    if (clear) {
-        clear.addEventListener('click', function () {
-            search.value = '';
-            clearTimeout(timer);
-            submitForm();
-        });
+        // clear search when X btn is clicked
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function () {
+                searchInput.value = '';
+                filterSales(); // Re-filter
+                searchInput.focus(); // return cursor to input
+            });
+        }
     }
-})();
+});
 </script>
 @endpush
-

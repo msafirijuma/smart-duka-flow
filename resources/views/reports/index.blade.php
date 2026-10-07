@@ -11,7 +11,7 @@
                 <div class="card-body text-center py-4">
                     <i class="bi bi-receipt display-6 text-primary"></i>
                     <h6 class="fw-bold mt-3 mb-1">Sales Report</h6>
-                    <small class="text-muted">Mauzo, collections, credit</small>
+                    <small class="text-muted">Sales, collections, credit</small>
                 </div>
             </div>
         </a>
@@ -22,7 +22,7 @@
                 <div class="card-body text-center py-4">
                     <i class="bi bi-bag-plus display-6 text-success"></i>
                     <h6 class="fw-bold mt-3 mb-1">Purchases Report</h6>
-                    <small class="text-muted">Manunuzi na suppliers</small>
+                    <small class="text-muted">Purchases na suppliers</small>
                 </div>
             </div>
         </a>
@@ -33,7 +33,7 @@
                 <div class="card-body text-center py-4">
                     <i class="bi bi-wallet2 display-6 text-warning"></i>
                     <h6 class="fw-bold mt-3 mb-1">Expenses Report</h6>
-                    <small class="text-muted">Matumizi kwa category</small>
+                    <small class="text-muted">Expenses by category</small>
                 </div>
             </div>
         </a>
