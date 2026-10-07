@@ -745,7 +745,7 @@
                                     <span class="lang-en-inline">Call</span>
                                     <span class="lang-sw-inline">Piga</span>
                                 </a>
-                                <a href="https://wa.me/255749696868" target="_blank" class="btn btn-primary btn-sm mt-3">
+                                <a href="https://wa.me/255687328084" target="_blank" class="btn btn-primary btn-sm mt-3">
                                     <i class="fab fa-whatsapp me-2"></i> WhatsApp
                                 </a>
                             </div>
@@ -781,27 +781,27 @@
                                 <span class="lang-sw">Mwanzilishi Mwenza | Mhudumu IT</span>
                             </p>
                             <p class="text-muted small mb-0">
-                               <span class="lang-en">Ensures the platform security, reliability and provides technical support to our users.</span> 
+                               <span class="lang-en">Ensures the platform security, system reliability and provides technical support to our users.</span> 
                                <span class="lang-sw">Kuhakikisha ulinzi, upatikanaji wa mradi na kutoa huduma za kiufundi kwa watumiaji wetu.</span> 
                             </p>
                             <div class="d-flex justify-content-center gap-3 mt-3">
-                                <a href="tel:+255712483688" class="btn btn-outline-primary btn-sm mt-3">
+                                <a href="tel:+255789533971" class="btn btn-outline-primary btn-sm mt-3">
                                     <i class="bi bi-phone me-2"></i>
                                     <span class="lang-en-inline">Call</span>
                                     <span class="lang-sw-inline">Piga</span>
                                 </a>
-                                <a href="https://wa.me/255712483688" target="_blank" class="btn btn-primary btn-sm mt-3">
+                                <a href="https://wa.me/255789533971" target="_blank" class="btn btn-primary btn-sm mt-3">
                                     <i class="fab fa-whatsapp me-2"></i> WhatsApp
                                 </a>
                             </div>
                         </div>
                         <!-- Social icons -->
                         <div class="card-footer border-0 d-flex justify-content-center gap-3" style="background-color: #0f172a">
-                            <a href="#" class="text-light" target="_blank" title="Instagram">
+                            <a href="https://www.instagram.com/noeboe_tz" class="text-light" target="_blank" title="Instagram">
                                 <i class="fab fa-instagram fa-lg"></i>
                             </a>
-                            <a href="#" class="text-light" target="_blank" title="Facebook">
-                                <i class="fab fa-facebook-f fa-lg"></i>
+                            <a href="https://github.com/noelfaraja1" class="text-light" target="_blank" title="Facebook">
+                                <i class="fab fa-github fa-lg"></i>
                             </a>
                         </div>
                     </div>
