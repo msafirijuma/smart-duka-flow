@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\CustomerPayment;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -121,27 +122,34 @@ class CustomerController extends Controller
             'notes'          => 'nullable|string|max:500',
         ]);
 
-        if ($request->amount > $customer->balance) {
-            return back()->withErrors(['amount' => 'Amount cannot be more than the outstanding balance (TZS ' . number_format($customer->balance, 0) . ')']);
+        // Set variables
+        $amount = $request->amount;
+        $shopId = session('current_shop_id');
+        $balance = $customer->balance;
+
+        if ($amount > $balance) {
+            return back()->withErrors([
+                'amount' => 'Amount cannot be more than the outstanding balance (TZS ' . number_format($balance, 0) . ')'
+            ]);
         }
 
-        DB::transaction(function () use ($request, $customer) {
+        DB::transaction(function () use ($request, $customer, $amount, $shopId) {
             CustomerPayment::create([
-                'shop_id'        => session('current_shop_id'),
+                'shop_id'        => $shopId,
                 'customer_id'    => $customer->id,
                 'user_id'        => auth()->id(),
-                'amount'         => $request->amount,
+                'amount'         => $amount,
                 'payment_method' => $request->payment_method,
                 'notes'          => $request->notes,
             ]);
 
-            $customer->decrement('balance', $request->amount);
+            $customer->decrement('balance', $amount);
         });
 
-        // activity log
+        // Activity log
         ActivityLogger::log(
             'customer.payment',
-            "Payment TZS " . number_format($amount, 0) . " from {$customer->name}",
+            "Payment TZS " . number_format($amount, 0) . " received from {$customer->name}",
             $customer,
             $shopId,
             ['amount' => $amount]

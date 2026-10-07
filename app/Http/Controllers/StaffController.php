@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use App\Services\PlanLimitService;
+use App\Services\ActivityLogger;
 
 class StaffController extends Controller
 {
@@ -69,13 +70,16 @@ class StaffController extends Controller
         // Assign Spatie role
         $user->assignRole($request->role);
 
+        // Define role string
+        $roleName = $request->role;
+
         // activity log
         ActivityLogger::log(
             'staff.created',
-            "Staff {$user->name} added as {$role}",
+            "Staff {$user->name} added as {$roleName}",
             $user,
             $shopId,
-            ['role' => $role]
+            ['role' => $roleName]
         );
 
         return redirect()->route('staff.index')
@@ -131,11 +135,11 @@ class StaffController extends Controller
         }
 
         // activity log
-        ActivityLogger::log('staff.deleted', "Staff {$name} removed", null, $shopId);
+        ActivityLogger::log('staff.deleted', "Staff {$user->name} removed", null, $shopId);
 
         $user->shops()->detach($shopId);
 
         return redirect()->route('staff.index')
-            ->with('success', 'Staff member removed from this shop.');
+            ->with('success', 'Staff member  removed from this shop.');
     }
 }

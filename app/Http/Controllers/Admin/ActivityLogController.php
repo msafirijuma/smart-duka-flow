@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
-use App\Models\Shop; // Ongeza Model ya Shop hapa
+use App\Models\Shop; 
 use Illuminate\Http\Request;
 
 class ActivityLogController extends Controller
@@ -29,15 +29,14 @@ class ActivityLogController extends Controller
 
         $logs = $query->paginate(40)->withQueryString();
 
-        // 1. Chukua list ya unique actions
+        // unique actions
         $actions = ActivityLog::whereNotNull('action')
             ->distinct()
             ->pluck('action');
 
-        // 2. Chukua list ya maduka yote kwa ajili ya filter ya Shop
+        // 2. list of all shops
         $shops = Shop::all();
-
-        // 3. Pitisha zote (logs, actions, shops) kwenda kwenye view
+        
         return view('admin.activity.index', compact('logs', 'actions', 'shops'));
     }
 }

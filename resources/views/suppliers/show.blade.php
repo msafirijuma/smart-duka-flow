@@ -126,9 +126,9 @@
                             </td>
                             <td>TZS {{ number_format($purchase->amount_paid, 0) }}</td>
                             <td>{{ $purchase->user->name ?? '—' }}</td>
-                            <td>{{ $purchase->purchase_date->format('d M Y') }}</td>
+                            <td>{{ $purchase->purchase_date->format('d M Y H:m') }}</td>
                             <td>
-                                {{-- Baada ya Purchase show route --}}
+                                <!-- After Purchase ---- show route -->
                                 @if(Route::has('purchases.show'))
                                     <a href="{{ route('purchases.show', $purchase) }}" class="btn btn-sm btn-outline-secondary">
                                         View
@@ -157,15 +157,18 @@
             <table class="table table-hover mb-0 align-middle">
                 <thead class="table-light">
                     <tr>
+                        <th>#</th>
                         <th>Amount</th>
                         <th>Method</th>
-                        <th>By</th>
+                        <th>Paid By</th>
+                        <th>Paid To</th>
                         <th style="width: 140px; min-width: 140px">Date</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($supplier->payments as $payment)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td class="fw-semibold text-success">
                                 TZS {{ number_format($payment->amount, 0) }}
                             </td>
@@ -175,11 +178,12 @@
                                 </span>
                             </td>
                             <td>{{ $payment->user->name ?? '—' }}</td>
-                            <td>{{ $payment->created_at->format('d M Y') }}</td>
+                            <td>{{ $supplier->name ?? '—' }}</td>
+                            <td>{{ $payment->created_at->format('d M Y H:i') }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted py-3">No payments yet.</td>
+                            <td colspan="6" class="text-center text-muted py-3">No payments yet.</td>
                         </tr>
                     @endforelse
                 </tbody>

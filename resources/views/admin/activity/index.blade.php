@@ -76,7 +76,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">No activity yet</td>
+                        <td colspan="7" class="text-center text-muted py-4">No activity yet</td>
                     </tr>
                 @endforelse
             </tbody>

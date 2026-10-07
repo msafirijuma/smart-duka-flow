@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Shop;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller

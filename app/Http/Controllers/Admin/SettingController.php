@@ -79,6 +79,7 @@ class SettingController extends Controller
             }
         }
 
+        // activity log 
         ActivityLogger::log('admin.settings.updated', "Admin settings updated ({$tab})");
 
         return redirect()

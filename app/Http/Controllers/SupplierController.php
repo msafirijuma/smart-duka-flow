@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\Activitylogger;
 use App\Models\Supplier;
 use App\Models\SupplierPayment;
 
@@ -107,24 +108,29 @@ class SupplierController extends Controller
             'notes'          => 'nullable|string|max:500',
         ]);
 
-        if ($request->amount > $supplier->balance) {
+        // Defining variables 
+        $amount = $request->amount;
+        $shopId = session('current_shop_id');
+        $balance = $supplier->balance;
+
+        if ($amount > $balance) {
             return back()->withErrors([
                 'amount' => 'Amount cannot exceed outstanding balance (TZS ' .
-                    number_format($supplier->balance, 0) . ').',
+                    number_format($balance, 0) . ').',
             ])->withInput();
         }
 
-        DB::transaction(function () use ($request, $supplier) {
+        DB::transaction(function () use ($request, $supplier, $amount, $shopId) {
             SupplierPayment::create([
-                'shop_id'        => session('current_shop_id'),
+                'shop_id'        => $shopId,
                 'supplier_id'    => $supplier->id,
                 'user_id'        => auth()->id(),
-                'amount'         => $request->amount,
+                'amount'         => $amount,
                 'payment_method' => $request->payment_method,
                 'notes'          => $request->notes,
             ]);
 
-            $supplier->decrement('balance', $request->amount);
+            $supplier->decrement('balance', $amount);
         });
 
         // activity log

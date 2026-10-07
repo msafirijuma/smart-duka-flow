@@ -13,6 +13,7 @@ use App\Models\Expense;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Services\ActivityLogger;
 use ZipArchive;
 
 class DataExportController extends Controller
@@ -48,7 +49,7 @@ class DataExportController extends Controller
             return back()->with('error', 'Could not create export file.');
         }
 
-        // 1) Shop summary
+        // Shop summary
         $zip->addFromString('shop.json', json_encode([
             'exported_at' => now()->toIso8601String(),
             'shop' => [
@@ -60,7 +61,7 @@ class DataExportController extends Controller
             ],
         ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
-        // 2) CSVs
+        // CSVs
         $zip->addFromString('products.csv', $this->csv(
             ['ID', 'Name', 'SKU', 'Barcode', 'Cost', 'Selling', 'Stock', 'Unit', 'Active'],
             Product::where('shop_id', $shopId)->get()->map(fn ($p) => [

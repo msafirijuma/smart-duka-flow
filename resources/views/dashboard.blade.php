@@ -109,7 +109,9 @@
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body">
                 <h6 class="fw-bold mb-3">Sales — last 7 days</h6>
-                <canvas id="weekSalesChart" height="110"></canvas>
+                <div style="position: relative; height: 220px; width: 100%;">
+                    <canvas id="weekSalesChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -133,7 +135,7 @@
                     <li class="list-group-item text-muted small">All stock looks OK</li>
                 @endforelse
             </ul>
-            <div class="card-body border-top py-2">
+            <div class="card-body border-top py-2 mt-auto">
                 <div class="d-grid gap-1">
                     <a href="{{ route('pos.index') }}" class="btn btn-sm btn-outline-primary">POS</a>
                     <a href="{{ route('reports.index') }}" class="btn btn-sm btn-outline-secondary">Reports</a>
@@ -149,7 +151,9 @@
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body">
                 <h6 class="fw-bold mb-3">Purchases — last 7 days</h6>
-                <canvas id="weekPurchasesChart" height="110"></canvas>
+                <div style="position: relative; height: 200px; width: 100%;">
+                    <canvas id="weekPurchasesChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -157,7 +161,9 @@
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body">
                 <h6 class="fw-bold mb-3">Expenses — last 7 days</h6>
-                <canvas id="weekExpensesChart" height="110"></canvas>
+                <div style="position: relative; height: 200px; width: 100%;">
+                    <canvas id="weekExpensesChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -168,9 +174,11 @@
     <div class="col-lg-6">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body">
-                <h6 class="fw-bold mb-3">Approx. profit — last 7 days</h6>
-                <p class="text-muted small mb-2">Sales − COGS − expenses</p>
-                <canvas id="weekProfitChart" height="110"></canvas>
+                <h6 class="fw-bold mb-1">Approx. profit — last 7 days</h6>
+                <p class="text-muted small mb-3">Sales − COGS − expenses</p>
+                <div style="position: relative; height: 200px; width: 100%;">
+                    <canvas id="weekProfitChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -178,7 +186,9 @@
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body">
                 <h6 class="fw-bold mb-3">New customers — last 7 days</h6>
-                <canvas id="weekCustomersChart" height="110"></canvas>
+                <div style="position: relative; height: 200px; width: 100%;">
+                    <canvas id="weekCustomersChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -190,14 +200,14 @@
         Recent Sales
     </div>
     <div class="table-responsive">
-        <table class="table table-hover mb-0 align-middle">
+        <table class="table table-hover table-striped table-sm mb-0 align-middle">
             <thead class="table-light">
                 <tr>
                     <th>#</th>
                     <th>Invoice</th>
                     <th>Cashier</th>
                     <th>Customer</th>
-                    <th class="text-end">Amount</th>
+                    <th>Amount</th>
                     <th>Payment</th>
                     <th>Date</th>
                 </tr>
@@ -209,7 +219,7 @@
                         <td class="fw-semibold">{{ $sale->invoice_number }}</td>
                         <td>{{ $sale->user->name ?? '—' }}</td>
                         <td>{{ $sale->customer->name ?? 'Walk-in' }}</td>
-                        <td class="text-end">TZS {{ number_format($sale->total, 0) }}</td>
+                        <td class="text-middle">TZS {{ number_format($sale->total, 0) }}</td>
                         <td><span class="badge bg-light text-dark text-uppercase">{{ $sale->payment_method }}</span></td>
                         <td class="small text-muted">{{ $sale->created_at->format('d M H:i') }}</td>
                     </tr>
@@ -245,32 +255,59 @@ document.addEventListener('DOMContentLoaded', function () {
     const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
     const grid = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
     const tick = isDark ? '#94a3b8' : '#64748b';
-    const labels = @json($chartLabels);
+    const labels = @json($chartLabels ?? []);
 
+    // Formatter ya Y-Axis Ticks (Short Format)
     const moneyTick = {
         color: tick,
-        callback: v => v >= 1000000 ? (v/1e6).toFixed(1)+'M' : (v >= 1000 ? (v/1000)+'k' : v)
+        callback: v => v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : (v >= 1000 ? (v / 1000) + 'k' : v)
     };
 
+    // Formatter ya Tooltip Hover (Full Currency Format)
+    const moneyTooltip = {
+        callbacks: {
+            label: function(context) {
+                let label = context.dataset.label || '';
+                if (label) label += ': ';
+                if (context.parsed.y !== null) {
+                    label += 'TZS ' + new Intl.NumberFormat().format(context.parsed.y);
+                }
+                return label;
+            }
+        }
+    };
+
+    // Generic Line Chart Function
     function lineChart(el, data, color, label) {
-        return new Chart(document.getElementById(el), {
+        const canvas = document.getElementById(el);
+        if (!canvas) return;
+
+        // Convert hex color to rgba for smooth fill effect
+        const bgRgba = color === '#10b981' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(37, 99, 235, 0.12)';
+
+        return new Chart(canvas, {
             type: 'line',
             data: {
                 labels,
                 datasets: [{
                     label,
-                    data,
+                    data: data || [],
                     borderColor: color,
-                    backgroundColor: 'rgba(37, 99, 235, 0.12)'
+                    backgroundColor: bgRgba,
                     fill: true,
                     tension: 0.35,
                     pointRadius: 4,
+                    pointHoverRadius: 6,
                     pointBackgroundColor: color,
                 }]
             },
             options: {
                 responsive: true,
-                plugins: { legend: { display: false } },
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: moneyTooltip
+                },
                 scales: {
                     x: { grid: { color: grid }, ticks: { color: tick } },
                     y: { beginAtZero: true, grid: { color: grid }, ticks: moneyTick }
@@ -279,28 +316,36 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function barChart(el, data, color, label, isCount) {
-        return new Chart(document.getElementById(el), {
+    // Generic Bar Chart Function
+    function barChart(el, data, color, label, isCount = false) {
+        const canvas = document.getElementById(el);
+        if (!canvas) return;
+
+        return new Chart(canvas, {
             type: 'bar',
             data: {
                 labels,
                 datasets: [{
                     label,
-                    data,
-                    backgroundColor: bg || (color === '#10b981' ? 'rgba(16,185,129,0.12)' : 'rgba(37,99,235,0.12)'),
+                    data: data || [],
+                    backgroundColor: color,
                     borderRadius: 6,
                 }]
             },
             options: {
                 responsive: true,
-                plugins: { legend: { display: false } },
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: isCount ? {} : moneyTooltip
+                },
                 scales: {
                     x: { grid: { display: false }, ticks: { color: tick } },
                     y: {
                         beginAtZero: true,
                         grid: { color: grid },
                         ticks: isCount
-                            ? { color: tick, stepSize: 1 }
+                            ? { color: tick, precision: 0 }
                             : moneyTick
                     }
                 }
@@ -308,16 +353,20 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Sales (existing)
-    lineChart('weekSalesChart', @json($chartData), '#2563eb', 'Sales');
+    // 1. Sales — Last 7 Days (Line - Blue)
+    lineChart('weekSalesChart', @json($chartData ?? []), '#2563eb', 'Sales');
 
-    // Purchases + Expenses
-    barChart('weekPurchasesChart', @json($purchaseChartData), '#f59e0b', 'Purchases', false);
-    barChart('weekExpensesChart', @json($expenseChartData), '#ef4444', 'Expenses', false);
+    // 2. Purchases — Last 7 Days (Bar - Amber)
+    barChart('weekPurchasesChart', @json($purchaseChartData ?? []), '#f59e0b', 'Purchases', false);
 
-    // Profit + Customers
-    lineChart('weekProfitChart', @json($profitChartData), '#10b981', 'Profit');
-    barChart('weekCustomersChart', @json($customerChartData), '#8b5cf6', 'New customers', true);
+    // 3. Expenses — Last 7 Days (Bar - Red)
+    barChart('weekExpensesChart', @json($expenseChartData ?? []), '#ef4444', 'Expenses', false);
+
+    // 4. Approx Profit — Last 7 Days (Line - Green)
+    lineChart('weekProfitChart', @json($profitChartData ?? []), '#10b981', 'Profit');
+
+    // 5. New Customers — Last 7 Days (Bar - Purple Count)
+    barChart('weekCustomersChart', @json($customerChartData ?? []), '#8b5cf6', 'New customers', true);
 });
 </script>
 @endpush

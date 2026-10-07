@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Services\PlanLimitService;
+use App\Services\ActivityLogger;
 
 class ProductController extends Controller
 {
@@ -143,6 +144,8 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
+        $shopId = session('current_shop_id');
+        
         $this->authorizeShop($product);
 
         if ($product->image && Storage::disk('public')->exists($product->image)) {
